@@ -3,7 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Front Row - Live Sports Streaming</title>
+    <title>Front Row Stream - Live Sports Streaming & Schedules</title>
+    <meta name="description" content="Watch live sports streams, check schedules, and find upcoming matches for Football, Basketball, MMA, and more. Fast, clean, and reliable.">
+    <meta name="keywords" content="live sports, sports streaming, football streams, basketball live, MMA streams, sports schedule, Front Row Stream">
+    <meta name="author" content="Front Row Stream">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://frstream.live/">
+    
+    <!-- Open Graph / Facebook / Telegram -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://frstream.live/">
+    <meta property="og:title" content="Front Row Stream - Live Sports Streaming">
+    <meta property="og:description" content="The cleanest way to find live sports streams and upcoming match schedules.">
+    <meta property="og:image" content="https://frstream.live/logo-og.png"> <!-- Upload your square logo as logo-og.png -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://frstream.live/">
+    <meta property="twitter:title" content="Front Row Stream - Live Sports Streaming">
+    <meta property="twitter:description" content="The cleanest way to find live sports streams and upcoming match schedules.">
+    <meta property="twitter:image" content="https://frstream.live/logo-og.png">
+
+    <!-- Mobile & Theme -->
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/favicon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
@@ -31,6 +56,20 @@
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Front Row Stream",
+      "url": "https://frstream.live/",
+      "description": "Live sports streaming aggregator and schedule tracker.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://frstream.live/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 </head>
 <body class="text-white font-sans antialiased" x-data="appData()">
 
@@ -50,9 +89,9 @@
                 <!-- Right Side Buttons -->
                 <div class="flex items-center gap-3">
                     <!-- Live Counter -->
-                    <div class="hidden sm:flex items-center gap-2 bg-card border border-border px-3 py-1.5 rounded text-sm">
-                        <span class="text-brand font-bold text-xs">● LIVE</span>
-                        <span class="text-white font-bold" x-text="liveCount"></span>
+                    <div  x-show="liveCount > 0" class="hidden sm:flex items-center gap-2 bg-card border border-border px-3 py-1.5 rounded text-sm">
+                        <span class="text-brand font-bold animate-pulse text-xs">● LIVE</span>
+                        <span class="text-white font-bold  animate-pulse" x-text="liveCount"></span>
                     </div>
                     
                     <!-- Refresh Button -->
@@ -62,7 +101,7 @@
                     </button>
                     
                     <!-- Telegram -->
-                    <a href="https://t.me/your_channel" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-[#29b6f6] p-2 rounded border border-border hover:border-[#29b6f6]/50 transition">
+                    <a href="https://t.me/frontrowstream" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-[#29b6f6] p-2 rounded border border-border hover:border-[#29b6f6]/50 transition">
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.26 4.202 13.37c-.642-.204-.655-.642.136-.953l10.857-4.19c.537-.194 1.006.131.367.02z"/></svg>
                     </a>
                 </div>
@@ -72,10 +111,41 @@
 
     <!-- MAIN CONTENT -->
     <main class="max-w-6xl mx-auto px-6 lg:px-8 py-10">
-        
+            <!-- Search Bar -->
+            <div class="mb-8 mt-6">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        x-model="searchQuery"
+                        placeholder="Search matches, teams, or leagues..." 
+                        class="w-full bg-card border border-border text-white text-sm rounded-lg pl-12 pr-4 py-3.5 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-all placeholder:text-muted/50"
+                    >
+                    <svg class="w-5 h-5 text-muted absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <button 
+                        x-show="searchQuery"
+                        @click="searchQuery = ''"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-white transition"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Search Results Counter -->
+            <div x-show="searchQuery" class="flex items-center justify-between mb-6 py-3 px-4 bg-card border border-border rounded-lg">
+                <span class="text-sm text-muted">
+                    Found <span class="text-white font-bold" x-text="filteredMatches.length"></span> match<span x-show="filteredMatches.length !== 1">es</span>
+                </span>
+                <button @click="searchQuery = ''" class="text-xs text-brand hover:text-red-400 font-bold uppercase tracking-wider">
+                    Clear Search
+                </button>
+            </div>
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-5xl md:text-6xl font-black tracking-tight mb-6">DISCOVERY</h1>
+            <h1 class="text-5xl md:text-6xl font-black tracking-tight mb-6">EVENTS</h1>
             
             <!-- Category Filter -->
             <!-- FIX: Changed 'overflow-x-auto' to 'flex-wrap' so the dropdown isn't clipped -->
@@ -144,11 +214,12 @@
         <!-- ============================================ -->
         <!-- DISCOVERY VIEW (Grid of Featured Matches) -->
         <!-- ============================================ -->
-        <div x-show="!loading && featuredMatches.length > 0">
+        <!-- Featured Grid (2x2) -->
+        <div x-show="!loading && filteredFeaturedMatches.length > 0 && !isSearching">
             
             <!-- Featured Grid (2x2) -->
             <div class="grid grid-cols-1 md:grid-cols-2 border border-border rounded-lg overflow-hidden mb-12">
-                <template x-for="(match, index) in featuredMatches" :key="match.id">
+                <template x-for="(match, index) in filteredFeaturedMatches" :key="match.id">
                     <div class="p-8 border-b border-border md:border-r cursor-pointer hover:bg-card/50 transition group" 
                          :class="{'md:border-r-0': (index + 1) % 2 === 0, 'border-b-0': index >= featuredMatches.length - 2}"
                          @click="openMatch(match)">
@@ -179,10 +250,12 @@
             <!-- ============================================ -->
             <!-- TIMELINE VIEW (List Grouped by Date) -->
             <!-- ============================================ -->
-            <div>
+            <!-- TIMELINE VIEW (List Grouped by Date) -->
+            <!-- TIMELINE VIEW (List Grouped by Date) -->
+            <div x-show="!loading && filteredGroupedMatches.length > 0">
                 <h2 class="text-3xl font-black tracking-tight mb-6">SCHEDULE</h2>
                 
-                <template x-for="(day, dayIndex) in groupedMatches" :key="dayIndex">
+                <template x-for="(day, dayIndex) in filteredGroupedMatches" :key="dayIndex">
                     <div class="mb-8">
                         <!-- Date Header -->
                         <div class="flex justify-between items-center py-3 px-4 bg-card border border-border rounded-t-lg">
@@ -197,27 +270,27 @@
                                     
                                     <!-- Time -->
                                     <div class="sm:w-20 flex-shrink-0">
-                                        <span class="text-xs sm:text-xl  font-bold" x-text="match.time"></span>
+                                        <span class="text-sm sm:text-lg font-bold" x-text="match.time"></span>
                                     </div>
 
                                     <!-- Match Info -->
-                                    <div class="flex-1 px-4">
+                                    <div class="flex-1 min-w-0 px-4">
                                         <h3 class="text-sm sm:text-lg font-bold line-clamp-3 group-hover:text-brand transition" x-text="match.title"></h3>
                                         <div class="flex items-center gap-2 mt-1">
                                             <span x-show="match.isLive" class="bg-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
                                                 <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> LIVE
-                                            </span>
-                                            <span x-show="!match.isLive" class="bg-muted text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
-                                                <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> Upcoming
                                             </span>
                                             <span class="text-xs text-muted font-bold tracking-wider uppercase" x-text="match.location"></span>
                                         </div>
                                     </div>
 
                                     <!-- Action Button -->
-                                    <div class="hidden sm:block flex-shrink-0">
+                                    <div class="flex-shrink-0 hidden sm:block">
                                         <button x-show="match.isLive" class="border border-muted/50 text-white text-xs font-bold px-4 py-2 rounded hover:border-brand hover:text-brand transition">
                                             WATCH LIVE
+                                        </button>
+                                        <button x-show="!match.isLive" class="border border-muted/30 text-muted text-xs font-bold px-4 py-2 rounded hover:border-white hover:text-white transition">
+                                            SET REMINDER
                                         </button>
                                     </div>
                                 </div>
@@ -228,10 +301,91 @@
             </div>
         </div>
 
+        <!-- ============================================ -->
+        <!-- SEARCH RESULTS (List View Only) -->
+        <!-- ============================================ -->
+        <!-- 👈 Only show when actively searching -->
+        <div x-show="!loading && isSearching">
+            
+            <!-- Search Results Header -->
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-black tracking-tight">
+                    Search Results
+                </h2>
+                <span class="text-sm text-muted">
+                    <span class="text-white font-bold" x-text="filteredMatches.length"></span> match<span x-show="filteredMatches.length !== 1">es</span> found
+                </span>
+            </div>
+
+            <!-- Results in List View -->
+            <template x-if="filteredGroupedMatches.length > 0">
+                <div>
+                    <template x-for="(day, dayIndex) in filteredGroupedMatches" :key="dayIndex">
+                        <div class="mb-8">
+                            <!-- Date Header -->
+                            <div class="flex justify-between items-center py-3 px-4 bg-card border border-border rounded-t-lg">
+                                <span class="text-sm font-bold tracking-wider uppercase" x-text="day.label"></span>
+                                <span class="text-xs text-muted font-bold" x-text="day.matches.length + ' EVENTS'"></span>
+                            </div>
+
+                            <!-- Matches List -->
+                            <div class="border border-border border-t-0 rounded-b-lg overflow-hidden">
+                                <template x-for="(match, matchIndex) in day.matches" :key="match.id">
+                                    <div class="flex items-center justify-between py-5 px-4 border-b border-border last:border-b-0 hover:bg-card/30 transition cursor-pointer group" @click="openMatch(match)">
+                                        
+                                        <!-- Time -->
+                                        <div class="sm:w-20 flex-shrink-0">
+                                            <span class="text-sm sm:text-lg  font-bold" x-text="match.time"></span>
+                                        </div>
+
+                                        <!-- Match Info -->
+                                        <div class="flex-1 min-w-0 px-4">
+                                            <h3 class="text-sm sm:text-lg font-bold line-clamp-3 group-hover:text-brand transition" x-text="match.title"></h3>
+                                            <div class="flex items-center gap-2 mt-1">
+                                                <span x-show="match.isLive" class="bg-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+                                                    <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> LIVE
+                                                </span>
+                                                <span class="text-xs text-muted font-bold tracking-wider uppercase" x-text="match.location"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Button -->
+                                        <div class="flex-shrink-0 hidden sm:block">
+                                            <button x-show="match.isLive" class="border border-muted/50 text-white text-xs font-bold px-4 py-2 rounded hover:border-brand hover:text-brand transition">
+                                                WATCH LIVE
+                                            </button>
+                                            <button x-show="!match.isLive" class="border border-muted/30 text-muted text-xs font-bold px-4 py-2 rounded hover:border-white hover:text-white transition">
+                                                SET REMINDER
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- No Results Message -->
+            <div x-show="filteredGroupedMatches.length === 0" class="text-center py-20 text-muted">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-lg">No matches found for "<span class="text-white" x-text="searchQuery"></span>"</p>
+                <p class="text-sm mt-2">Try different keywords or clear your search</p>
+                <button @click="searchQuery = ''" class="mt-4 text-brand hover:text-red-400 font-bold text-sm uppercase tracking-wider">
+                    Clear Search
+                </button>
+            </div>
+        </div>
+
         <!-- Empty State -->
-        <div x-show="!loading && featuredMatches.length === 0" class="text-center py-20 text-muted">
-            <p class="text-lg">No matches found</p>
-            <p class="text-sm mt-2">Try selecting a different category</p>
+        <div x-show="!loading && filteredFeaturedMatches.length === 0" class="text-center py-20 text-muted">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="text-lg" x-text="searchQuery ? 'No matches found for "' + searchQuery + '"' : 'No matches found'"></p>
+            <p class="text-sm mt-2" x-text="searchQuery ? 'Try a different search term' : 'Try selecting a different category'"></p>
         </div>
 
     </main>
@@ -256,7 +410,7 @@
                     
                 </div>
                 <div>
-                    <a href="https://t.me/your_channel" target="_blank" class="inline-flex items-center gap-1.5 hover:text-[#29b6f6] transition">
+                    <a href="https://t.me/frontrowstream" target="_blank" class="inline-flex items-center gap-1.5 hover:text-[#29b6f6] transition">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#29b6f6"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.26 4.202 13.37c-.642-.204-.655-.642.136-.953l10.857-4.19c.537-.194 1.006.131.367.02z"/></svg>
                         Telegram
                     </a>
@@ -266,153 +420,6 @@
             <div class="text-xs">&copy; 2026 FRONT ROW STREAM. ALL RIGHTS RESERVED.</div>
         </div>
     </footer>
-
-    <!-- LOGIC -->
-    <script>
-        function appData() {
-            return {
-                activeCategory: 'live',
-                categories: [],
-                otherCategories: [],
-                matches: [],
-                featuredMatches: [],
-                groupedMatches: [],
-                liveCount: 0,
-                loading: false,
-                error: null,
-
-                async init() {
-                    await this.fetchCategories();
-                    await this.fetchMatches();
-                },
-
-                isOtherCategory() {
-                    return this.otherCategories.some(cat => cat.value === this.activeCategory);
-                },
-
-                async fetchCategories() {
-                    try {
-                        const res = await fetch('https://frontrowstream.live/api/sports.php');
-                        if (!res.ok) throw new Error('Failed');
-                        const data = await res.json();
-                        
-                        const allCategories = data.map(sport => ({
-                            value: sport.slug || sport.id || sport.name.toLowerCase().replace(/\s+/g, '-'),
-                            name: sport.name || sport.title || sport
-                        }));
-
-                        // Define our main categories
-                        const mainCategories = ['football', 'basketball', 'american-football'];
-                        
-                        // Filter out main categories for the "Others" dropdown
-                        this.otherCategories = allCategories.filter(cat => 
-                            !mainCategories.includes(cat.value) && cat.value !== 'live'
-                        );
-
-                        // Combine with main categories for full list
-                        this.categories = [
-                            { value: 'live', name: 'All Live Events' },
-                            ...allCategories
-                        ];
-                    } catch (e) {
-                        // Fallback categories
-                        this.otherCategories = [
-                            { value: 'tennis', name: 'Tennis' },
-                            { value: 'mma', name: 'MMA' },
-                            { value: 'cricket', name: 'Cricket' },
-                            { value: 'rugby', name: 'Rugby' }
-                        ];
-                    }
-                },
-
-                async fetchMatches() {
-                    this.loading = true;
-                    this.error = null;
-                    try {
-                        const res = await fetch(`https://frontrowstream.live/api/matches.php?cat=${this.activeCategory}`);
-                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                        
-                        const data = await res.json();
-                        const rawMatches = Array.isArray(data) ? data : (data.matches || data.data || []);
-
-                        this.matches = rawMatches.map(match => {
-                            const isLive = new Date(match.date) < new Date();
-                            const cat = (match.category || match.sport || this.activeCategory).toLowerCase();
-                            const dateObj = new Date(match.date);
-                            
-                            return {
-                                id: match.id,
-                                title: match.title || `${match.teams?.home?.name || 'Team A'} vs ${match.teams?.away?.name || 'Team B'}`,
-                                category: cat,
-                                isLive: isLive,
-                                popular: match.popular === true || match.popular === '1' || match.popular === 1,
-                                time: dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-                                date: dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                                dateLabel: dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
-                                location: match.league || match.competition || cat.toUpperCase(),
-                                sources: match.sources || []
-                            };
-                        });
-
-                        this.liveCount = this.matches.filter(m => m.isLive).length;
-
-                        // DISCOVERY: Just take first 4 matches (no popular sorting)
-                        // Only sort by live status to show live matches first
-                        const sorted = [...this.matches].sort((a, b) => {
-                            if (a.isLive && !b.isLive) return -1;
-                            if (!a.isLive && b.isLive) return 1;
-                            return 0;
-                        });
-                        this.featuredMatches = sorted.slice(0, 4);
-
-                        // TIMELINE: Group by date (show all matches, not just featured)
-                        this.groupedMatches = this.groupMatchesByDate(this.matches);
-
-                    } catch (e) {
-                        console.error(e);
-                        this.error = e.message;
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-
-                groupMatchesByDate(matches) {
-                    const groups = {};
-                    const today = new Date();
-                    const tomorrow = new Date(today);
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-
-                    matches.forEach(match => {
-                        const matchDate = new Date(match.date);
-                        const dateKey = matchDate.toDateString();
-                        
-                        let label = match.dateLabel;
-                        if (matchDate.toDateString() === today.toDateString()) {
-                            label = 'Today, ' + matchDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-                        } else if (matchDate.toDateString() === tomorrow.toDateString()) {
-                            label = 'Tomorrow, ' + matchDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-                        }
-
-                        if (!groups[dateKey]) {
-                            groups[dateKey] = { label, matches: [] };
-                        }
-                        groups[dateKey].matches.push(match);
-                    });
-
-                    // Sort each day's matches by time
-                    return Object.values(groups).map(group => {
-                        group.matches.sort((a, b) => new Date(a.date) - new Date(b.date));
-                        return group;
-                    });
-                },
-
-                openMatch(match) {
-                    const firstSource = match.sources && match.sources.length > 0 ? match.sources[0].source : 'alpha';
-                    const sourceId = match.sources && match.sources.length > 0 ? match.sources[0].id : match.id;
-                    window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&isLive=${match.isLive}`;
-                }
-            }
-        }
-    </script>
+    <script src="js/app.js"></script>
 </body>
 </html>

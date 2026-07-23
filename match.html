@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Live - Front Row Stream</title>
+    <title>Watch Live Match - Front Row Stream</title>
+    <meta name="description" content="Watch the live stream and view real-time stats for today's match on Front Row Stream.">
+    <meta property="og:type" content="video.other">
+    <!-- ... keep the rest of the OG tags, just change the URLs to match.html if needed, or leave as root ... -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
@@ -31,6 +34,24 @@
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SportsEvent",
+      "name": "Live Sports Match",
+      "description": "Live stream and statistics for upcoming sports match.",
+      "startDate": "2026-07-01T00:00:00Z", 
+      "location": {
+        "@type": "Place",
+        "name": "Online Stream"
+      },
+      "organizer": {
+        "@type": "Organization",
+        "name": "Front Row Stream",
+        "url": "https://frstream.live"
+      }
+    }
+    </script>
 </head>
 <body class="text-white font-sans antialiased" x-data="matchPage()">
 
@@ -53,7 +74,7 @@
                     <button onclick="window.location.reload()" class="text-muted hover:text-white p-2 rounded border border-border hover:border-white/50 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
-                    <a href="https://t.me/your_channel" target="_blank" class="text-muted hover:text-[#29b6f6] p-2 rounded border border-border hover:border-[#29b6f6]/50 transition">
+                    <a href="https://t.me/frontrowstream" target="_blank" class="text-muted hover:text-[#29b6f6] p-2 rounded border border-border hover:border-[#29b6f6]/50 transition">
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.26 4.202 13.37c-.642-.204-.655-.642.136-.953l10.857-4.19c.537-.194 1.006.131.367.02z"/></svg>
                     </a>
                 </div>
@@ -90,7 +111,7 @@
                 </div>
 
                 <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight mb-2" x-text="match.title"></h1>
-                <p class="text-muted text-sm" x-text="match.date"></p>
+                <p class="text-muted text-sm"><span x-text="match.date"></span></p>
             </div>
 
             <!-- Broadcast Sources (Only if Live) -->
@@ -159,23 +180,34 @@
                 
                 <div class="border border-border rounded-lg overflow-hidden">
                     <template x-for="(match, index) in recommendedMatches" :key="match.id">
-                        <div class="flex items-center justify-between py-4 px-6 border-b border-border last:border-b-0 hover:bg-card/50 transition cursor-pointer group" @click="openRecommendedMatch(match)">
-                            <div class="flex items-center gap-4 flex-1 min-w-0">
-                                <span class="text-xs sm:text-xl font-bold w-16" x-text="match.time"></span>
-                                <div class="min-w-0">
-                                    <h3 class="text-base font-bold line-clamp-2 group-hover:text-brand transition" x-text="match.title"></h3>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <span class="bg-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
-                                            <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> LIVE
-                                        </span>
-                                        <span class="text-xs text-muted font-bold tracking-wider uppercase" x-text="match.location"></span>
+                                    <div class="flex items-center justify-between py-5 px-4 border-b border-border last:border-b-0 hover:bg-card/30 transition cursor-pointer group" @click="openRecommendedMatch(match)">
+                                        
+                                        <!-- Time -->
+                                        <div class="sm:w-20 flex-shrink-0">
+                                            <span class="text-sm sm:text-lg  font-bold" x-text="match.time"></span>
+                                        </div>
+
+                                        <!-- Match Info -->
+                                        <div class="flex-1 min-w-0 px-4">
+                                            <h3 class="text-sm sm:text-lg font-bold line-clamp-3 group-hover:text-brand transition" x-text="match.title"></h3>
+                                            <div class="flex items-center gap-2 mt-1">
+                                                <span class="bg-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+                                                    <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> LIVE
+                                                </span>
+                                                <span class="text-xs text-muted font-bold tracking-wider uppercase" x-text="match.location"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Button -->
+                                        <div class="flex-shrink-0 hidden sm:block">
+                                            <button x-show="match.isLive" class="border border-muted/50 text-white text-xs font-bold px-4 py-2 rounded hover:border-brand hover:text-brand transition">
+                                                WATCH LIVE
+                                            </button>
+                                            <button x-show="!match.isLive" class="border border-muted/30 text-muted text-xs font-bold px-4 py-2 rounded hover:border-white hover:text-white transition">
+                                                SET REMINDER
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="hidden sm:blockflex-shrink-0 ml-4">
-                                <span class="text-xs font-bold text-muted group-hover:text-brand transition">Watch &rarr;</span>
-                            </div>
-                        </div>
                     </template>
                 </div>
             </div>
@@ -183,156 +215,38 @@
         </div>
     </main>
 
-    <!-- FOOTER (Matches Homepage) -->
+    <!-- FOOTER -->
     <footer class="border-t border-border py-8 mt-10">
         <div class="max-w-6xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted">
-            <div class="flex items-center gap-2">
-                <div class="bg-brand text-white font-black text-xs px-1.5 py-0.5 rounded">FR</div>
-                <span class="font-bold text-white">FRONT ROW</span>
-            </div>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-white transition">Privacy</a>
-                <a href="#" class="hover:text-white transition">Terms</a>
-                <a href="https://t.me/your_channel" target="_blank" class="inline-flex items-center gap-1.5 hover:text-[#29b6f6] transition">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#29b6f6"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.26 4.202 13.37c-.642-.204-.655-.642.136-.953l10.857-4.19c.537-.194 1.006.131.367.02z"/></svg>
-                    Telegram
-                </a>
-            </div>
-            <div class="text-xs">&copy; 2024 FRONT ROW. ALL RIGHTS RESERVED.</div>
+            
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer" @click="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="bg-brand text-white font-black text-sm px-2 py-1 rounded tracking-tighter">FR</div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-brand text-[10px] font-bold tracking-widest uppercase">Front Row</span>
+                        <span class="text-white font-bold text-lg tracking-tight -mt-0.5">STREAM</span>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <a href="privacy.html" class="hover:text-white transition">Privacy</a>
+                    <a href="terms.html" class="hover:text-white transition">Terms</a>
+                    <a href="dmca.html" class="hover:text-white transition">DMCA</a>
+                    <a href="contact.html" class="hover:text-white transition">Contact</a>
+                    
+                </div>
+                <div>
+                    <a href="https://t.me/frontrowstream" target="_blank" class="inline-flex items-center gap-1.5 hover:text-[#29b6f6] transition">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#29b6f6"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.26 4.202 13.37c-.642-.204-.655-.642.136-.953l10.857-4.19c.537-.194 1.006.131.367.02z"/></svg>
+                        Telegram
+                    </a>
+                </div>
+        </div>
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 mt-6 text-center text-xs text-muted">
+            <div class="text-xs">&copy; 2026 FRONT ROW STREAM. ALL RIGHTS RESERVED.</div>
         </div>
     </footer>
 
     <!-- LOGIC -->
-    <script>
-        function matchPage() {
-            return {
-                loading: true,
-                viewerCount: 0,
-                activeSource: null,
-                currentStreamUrl: '',
-                
-                match: { title: 'Loading...', location: '', date: '', isLive: false },
-                sources: [],
-                recommendedMatches: [],
-                
-                // Raw stats from API
-                rawStats: {
-                    possession: { home: 58, away: 42 },
-                    shotsOnTarget: { home: 12, away: 7 },
-                    totalShots: { home: 18, away: 11 },
-                    corners: { home: 7, away: 4 }
-                },
-                
-                player: { name: 'K. Mbappe', team: 'Real Madrid', goals: 2, rating: 8.9, passes: 45, tackles: 2 },
-
-                // Computed property to format stats for the UI
-                get statsList() {
-                    const format = (h, a) => {
-                        const total = h + a;
-                        const pH = total === 0 ? 50 : Math.round((h / total) * 100);
-                        return { home: h, away: a, percentHome: pH, percentAway: 100 - pH };
-                    };
-
-                    return [
-                        { label: 'Possession', ...format(this.rawStats.possession.home, this.rawStats.possession.away) },
-                        { label: 'Shots on Target', ...format(this.rawStats.shotsOnTarget.home, this.rawStats.shotsOnTarget.away) },
-                        { label: 'Total Shots', ...format(this.rawStats.totalShots.home, this.rawStats.totalShots.away) },
-                        { label: 'Corners', ...format(this.rawStats.corners.home, this.rawStats.corners.away) }
-                    ];
-                },
-
-                async init() {
-                    const params = new URLSearchParams(window.location.search);
-                    const source = params.get('source');
-                    const id = params.get('id');
-                    const title = params.get('title') || 'Live Match';
-                    const isLiveParam = params.get('isLive');
-
-                    this.match.title = decodeURIComponent(title);
-                    this.match.isLive = (isLiveParam === 'true');
-
-                    if (source && id) {
-                        await this.loadStream(source, id);
-                    } else {
-                        this.loading = false;
-                    }
-
-                    if (!this.match.isLive) {
-                        await this.fetchRecommendedMatches();
-                    }
-                },
-
-                async loadStream(source, id) {
-                    this.loading = true;
-                    try {
-                        const res = await fetch(`https://frontrowstream.live/api/stream.php?source=${source}&id=${id}`);
-                        const data = await res.json();
-                        const streams = Array.isArray(data) ? data : [];
-
-                        if (streams.length > 0) {
-                            this.sources = streams.map((s, index) => ({
-                                id: `source_${index}`,
-                                name: s.source ? s.source.charAt(0).toUpperCase() + s.source.slice(1) : `Server ${index + 1}`,
-                                quality: index === 0 ? 'HD' : 'SD',
-                                url: s.embedUrl,
-                            }));
-
-                            const rawViews = streams[0].views || streams[0].viewers || 0;
-                            this.viewerCount = parseInt(rawViews) || 0;
-
-                            this.selectSource(this.sources[0]);
-                        } else {
-                            this.loading = false;
-                        }
-                    } catch (e) {
-                        console.error(e);
-                        this.loading = false;
-                    }
-                },
-
-                async fetchRecommendedMatches() {
-                    try {
-                        const res = await fetch('https://frontrowstream.live/api/matches.php?cat=live');
-                        if (!res.ok) return;
-                        const data = await res.json();
-                        const rawMatches = Array.isArray(data) ? data : (data.matches || []);
-
-                        this.recommendedMatches = rawMatches
-                            .filter(m => m.popular === true || m.popular === '1') 
-                            .slice(0, 5)
-                            .map(match => {
-                                const dateObj = new Date(match.date);
-                                return {
-                                    id: match.id,
-                                    title: match.title || `${match.teams?.home?.name} vs ${match.teams?.away?.name}`,
-                                    location: match.league || match.competition,
-                                    time: dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-                                    sources: match.sources || []
-                                };
-                            });
-                    } catch (e) { console.error(e); }
-                },
-
-                selectSource(source) {
-                    this.loading = true;
-                    this.activeSource = source;
-                    this.currentStreamUrl = source.url;
-                },
-
-                formatViewers(count) {
-                    if (!count || count === 0) return 'Live';
-                    if (count >= 1000000) return (count / 1000000).toFixed(1) + 'M';
-                    if (count >= 1000) return (count / 1000).toFixed(1) + 'K';
-                    return count.toString();
-                },
-
-                openRecommendedMatch(match) {
-                    const firstSource = match.sources && match.sources.length > 0 ? match.sources[0].source : 'alpha';
-                    const sourceId = match.sources && match.sources.length > 0 ? match.sources[0].id : match.id;
-                    window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&isLive=true`;
-                }
-            }
-        }
-    </script>
+       <script src="js/match.js"></script>
 </body>
 </html>

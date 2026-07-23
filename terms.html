@@ -76,7 +76,7 @@
         <article class="legal-content">
             <!-- PASTE TERMS OF SERVICE CONTENT HERE (See Step 2 below) -->
             <p><strong>1. Acceptance of Terms</strong><br>
-            By accessing or using the Front Row Stream website ("frontrowstream.live", the "Site", "we", "us", or "our"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you must not access or use the Site.</p>
+            By accessing or using the Front Row Stream website ("frstream.live", the "Site", "we", "us", or "our"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you must not access or use the Site.</p>
             
             <div class="bg-card border border-border p-5 rounded-lg my-6">
                 <h3 class="!mt-0 !mb-2 text-brand">2. Nature of the Service (No Hosting Disclaimer)</h3>
@@ -116,20 +116,35 @@
 
     </main>
 
+  
     <!-- FOOTER -->
     <footer class="border-t border-border py-8 mt-10">
         <div class="max-w-6xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted">
-            <div class="flex items-center gap-2">
-                <div class="bg-brand text-white font-black text-xs px-1.5 py-0.5 rounded">FR</div>
-                <span class="font-bold text-white">FRONT ROW</span>
-            </div>
-            <div class="flex gap-6">
-                <a href="terms.html" class="hover:text-white transition">Terms</a>
-                <a href="privacy.html" class="hover:text-white transition">Privacy</a>
-                <a href="dmca.html" class="hover:text-white transition">DMCA</a>
-                <a href="contact.html" class="hover:text-white transition">Contact</a>
-            </div>
-            <div class="text-xs">&copy; 2024 FRONT ROW. ALL RIGHTS RESERVED.</div>
+            
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer" @click="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="bg-brand text-white font-black text-sm px-2 py-1 rounded tracking-tighter">FR</div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-brand text-[10px] font-bold tracking-widest uppercase">Front Row</span>
+                        <span class="text-white font-bold text-lg tracking-tight -mt-0.5">STREAM</span>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <a href="privacy.html" class="hover:text-white transition">Privacy</a>
+                    <a href="terms.html" class="hover:text-white transition">Terms</a>
+                    <a href="dmca.html" class="hover:text-white transition">DMCA</a>
+                    <a href="contact.html" class="hover:text-white transition">Contact</a>
+                    
+                </div>
+                <div>
+                    <a href="https://t.me/frontrowstream" target="_blank" class="inline-flex items-center gap-1.5 hover:text-[#29b6f6] transition">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#29b6f6"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.26 4.202 13.37c-.642-.204-.655-.642.136-.953l10.857-4.19c.537-.194 1.006.131.367.02z"/></svg>
+                        Telegram
+                    </a>
+                </div>
+        </div>
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 mt-6 text-center text-xs text-muted">
+            <div class="text-xs">&copy; 2026 FRONT ROW STREAM. ALL RIGHTS RESERVED.</div>
         </div>
     </footer>
 
