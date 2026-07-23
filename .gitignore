@@ -1,0 +1,4 @@
+   api/
+   cache/
+   *.php
+   .DS_Store
