@@ -265,7 +265,7 @@
                 async loadStream(source, id) {
                     this.loading = true;
                     try {
-                        const res = await fetch(`./api/stream.php?source=${source}&id=${id}`);
+                        const res = await fetch(`https://frontrowstream.live/api/stream.php?source=${source}&id=${id}`);
                         const data = await res.json();
                         const streams = Array.isArray(data) ? data : [];
 
@@ -292,7 +292,7 @@
 
                 async fetchRecommendedMatches() {
                     try {
-                        const res = await fetch('./api/matches.php?cat=live');
+                        const res = await fetch('https://frontrowstream.live/api/matches.php?cat=live');
                         if (!res.ok) return;
                         const data = await res.json();
                         const rawMatches = Array.isArray(data) ? data : (data.matches || []);

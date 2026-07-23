@@ -292,7 +292,7 @@
 
                 async fetchCategories() {
                     try {
-                        const res = await fetch('./api/sports.php');
+                        const res = await fetch('https://frontrowstream.live/api/sports.php');
                         if (!res.ok) throw new Error('Failed');
                         const data = await res.json();
                         
@@ -329,7 +329,7 @@
                     this.loading = true;
                     this.error = null;
                     try {
-                        const res = await fetch(`./api/matches.php?cat=${this.activeCategory}`);
+                        const res = await fetch(`https://frontrowstream.live/api/matches.php?cat=${this.activeCategory}`);
                         if (!res.ok) throw new Error(`HTTP ${res.status}`);
                         
                         const data = await res.json();
