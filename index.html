@@ -196,28 +196,28 @@
                                 <div class="flex items-center justify-between py-5 px-4 border-b border-border last:border-b-0 hover:bg-card/30 transition cursor-pointer group" @click="openMatch(match)">
                                     
                                     <!-- Time -->
-                                    <div class="w-20 flex-shrink-0">
-                                        <span class="text-xl font-bold" x-text="match.time"></span>
+                                    <div class="sm:w-20 flex-shrink-0">
+                                        <span class="text-xs sm:text-xl  font-bold" x-text="match.time"></span>
                                     </div>
 
                                     <!-- Match Info -->
-                                    <div class="flex-1 min-w-0 px-4">
-                                        <h3 class="text-lg font-bold truncate group-hover:text-brand transition" x-text="match.title"></h3>
+                                    <div class="flex-1 px-4">
+                                        <h3 class="text-sm sm:text-lg font-bold line-clamp-3 group-hover:text-brand transition" x-text="match.title"></h3>
                                         <div class="flex items-center gap-2 mt-1">
                                             <span x-show="match.isLive" class="bg-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
                                                 <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> LIVE
+                                            </span>
+                                            <span x-show="!match.isLive" class="bg-muted text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+                                                <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> Upcoming
                                             </span>
                                             <span class="text-xs text-muted font-bold tracking-wider uppercase" x-text="match.location"></span>
                                         </div>
                                     </div>
 
                                     <!-- Action Button -->
-                                    <div class="flex-shrink-0">
+                                    <div class="hidden sm:block flex-shrink-0">
                                         <button x-show="match.isLive" class="border border-muted/50 text-white text-xs font-bold px-4 py-2 rounded hover:border-brand hover:text-brand transition">
                                             WATCH LIVE
-                                        </button>
-                                        <button x-show="!match.isLive" class="border border-muted/30 text-muted text-xs font-bold px-4 py-2 rounded hover:border-white hover:text-white transition">
-                                            SET REMINDER
                                         </button>
                                     </div>
                                 </div>
