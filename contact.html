@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Front Row Stream</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#e50914',
+                        dark: '#0a0a0a',
+                        card: '#111111',
+                        border: '#1f1f1f',
+                        muted: '#888888'
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0a0a0a; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+        
+        /* Custom Legal Typography */
+        .legal-content h2 { font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-top: 2.5rem; margin-bottom: 1rem; letter-spacing: -0.025em; }
+        .legal-content h3 { font-size: 1.1rem; font-weight: 600; color: #ffffff; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .legal-content p { color: #888888; line-height: 1.75; margin-bottom: 1.25rem; font-size: 0.95rem; }
+        .legal-content ul { list-style-type: disc; padding-left: 1.5rem; color: #888888; line-height: 1.75; margin-bottom: 1.25rem; font-size: 0.95rem; }
+        .legal-content li { margin-bottom: 0.5rem; }
+        .legal-content a { color: #e50914; text-decoration: underline; transition: color 0.2s; }
+        .legal-content a:hover { color: #ff4d4d; }
+        .legal-content strong { color: #ffffff; font-weight: 600; }
+    </style>
+</head>
+<body class="text-white font-sans antialiased">
+
+    <!-- NAVIGATION -->
+    <nav class="border-b border-border bg-dark/95 sticky top-0 z-50 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="flex items-center gap-2 cursor-pointer group">
+                    <div class="bg-brand text-white font-black text-sm px-2 py-1 rounded tracking-tighter group-hover:bg-red-600 transition">FR</div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-brand text-[10px] font-bold tracking-widest uppercase">Front Row</span>
+                        <span class="text-white font-bold text-lg tracking-tight -mt-0.5">STREAM</span>
+                    </div>
+                </a>
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="text-muted hover:text-white text-sm font-medium transition">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-3xl mx-auto px-6 lg:px-8 py-16">
+        
+        <a href="index.html" class="inline-flex items-center gap-2 text-muted hover:text-brand transition mb-8 text-xs font-bold tracking-widest uppercase group">
+            <svg class="w-4 h-4 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Schedule
+        </a>
+
+        <header class="mb-12 border-b border-border pb-8">
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Contact & Legal Inquiries</h1>
+            <p class="text-muted text-sm">Last Updated: 20th July, 2026</p>
+        </header>
+
+        <article class="legal-content">
+            <p>We value your feedback and are committed to addressing your concerns promptly. Please direct your inquiry to the appropriate department below to ensure the fastest response.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-10">
+                <!-- General Support Box -->
+                <div class="bg-card border border-border p-6 rounded-lg">
+                    <h3 class="!mt-0 !mb-3 text-white text-lg">General Support</h3>
+                    <p class="text-sm mb-4">For questions about site functionality, broken links, or general feedback.</p>
+                    <a href="mailto:support@frontrowstream.live" class="inline-flex items-center gap-2 text-brand font-bold hover:text-red-400 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        support@frontrowstream.live
+                    </a>
+                </div>
+
+                <!-- Legal/DMCA Box -->
+                <div class="bg-card border border-brand/30 p-6 rounded-lg">
+                    <h3 class="!mt-0 !mb-3 text-brand text-lg">Legal & DMCA</h3>
+                    <p class="text-sm mb-4">For all matters relating to intellectual property, copyright claims, or legal compliance.</p>
+                    <a href="mailto:dmca@frontrowstream.live" class="inline-flex items-center gap-2 text-white font-bold hover:text-brand transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        dmca@frontrowstream.live
+                    </a>
+                </div>
+            </div>
+
+            <h2>Response Time</h2>
+            <p>We strive to respond to all legitimate inquiries within 3–5 business days. For urgent DMCA takedown requests, please ensure your notice contains all required elements listed in our DMCA Policy to avoid processing delays.</p>
+
+        </article>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-border py-8 mt-10">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted">
+            <div class="flex items-center gap-2">
+                <div class="bg-brand text-white font-black text-xs px-1.5 py-0.5 rounded">FR</div>
+                <span class="font-bold text-white">FRONT ROW</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="terms.html" class="hover:text-white transition">Terms</a>
+                <a href="privacy.html" class="hover:text-white transition">Privacy</a>
+                <a href="dmca.html" class="hover:text-white transition">DMCA</a>
+                <a href="contact.html" class="hover:text-white transition">Contact</a>
+            </div>
+            <div class="text-xs">&copy; 2024 FRONT ROW. ALL RIGHTS RESERVED.</div>
+        </div>
+    </footer>
+
+</body>
+</html>

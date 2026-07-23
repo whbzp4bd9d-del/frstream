@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Front Row Stream</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#e50914',
+                        dark: '#0a0a0a',
+                        card: '#111111',
+                        border: '#1f1f1f',
+                        muted: '#888888'
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0a0a0a; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+        
+        /* Custom Legal Typography */
+        .legal-content h2 { font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-top: 2.5rem; margin-bottom: 1rem; letter-spacing: -0.025em; }
+        .legal-content h3 { font-size: 1.1rem; font-weight: 600; color: #ffffff; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .legal-content p { color: #888888; line-height: 1.75; margin-bottom: 1.25rem; font-size: 0.95rem; }
+        .legal-content ul { list-style-type: disc; padding-left: 1.5rem; color: #888888; line-height: 1.75; margin-bottom: 1.25rem; font-size: 0.95rem; }
+        .legal-content li { margin-bottom: 0.5rem; }
+        .legal-content a { color: #e50914; text-decoration: underline; transition: color 0.2s; }
+        .legal-content a:hover { color: #ff4d4d; }
+        .legal-content strong { color: #ffffff; font-weight: 600; }
+    </style>
+</head>
+<body class="text-white font-sans antialiased">
+
+    <!-- NAVIGATION -->
+    <nav class="border-b border-border bg-dark/95 sticky top-0 z-50 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="flex items-center gap-2 cursor-pointer group">
+                    <div class="bg-brand text-white font-black text-sm px-2 py-1 rounded tracking-tighter group-hover:bg-red-600 transition">FR</div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-brand text-[10px] font-bold tracking-widest uppercase">Front Row</span>
+                        <span class="text-white font-bold text-lg tracking-tight -mt-0.5">STREAM</span>
+                    </div>
+                </a>
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="text-muted hover:text-white text-sm font-medium transition">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-3xl mx-auto px-6 lg:px-8 py-16">
+        
+        <a href="index.html" class="inline-flex items-center gap-2 text-muted hover:text-brand transition mb-8 text-xs font-bold tracking-widest uppercase group">
+            <svg class="w-4 h-4 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Schedule
+        </a>
+
+        <header class="mb-12 border-b border-border pb-8">
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">DMCA & Copyright Policy</h1>
+            <p class="text-muted text-sm">Last Updated: 20th July, 2026</p>
+        </header>
+
+        <article class="legal-content">
+            <p>Front Row Stream respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act of 1998 (DMCA), 17 U.S.C. § 512, we have implemented this policy to respond to claims of copyright infringement.</p>
+
+            <div class="bg-card border border-border p-5 rounded-lg my-6">
+                <h3 class="!mt-0 !mb-2 text-brand">1. No Hosting of Copyrighted Material</h3>
+                <p class="!mb-0 text-white">Front Row Stream <strong>does not host, store, or transmit</strong> any video files, audio, or copyrighted media. Our platform functions exclusively as a search index and directory that aggregates publicly available URLs and embed codes from third-party sources. We do not have the ability to monitor, control, or alter the content hosted on those external servers.</p>
+            </div>
+
+            <h2>2. DMCA Safe Harbor Compliance</h2>
+            <p>We qualify for Safe Harbor protection under 17 U.S.C. § 512(d) (Information Location Tools) and § 512(c) (Service Providers). We do not initiate the transmission, select the receiver, or modify the content of the third-party streams.</p>
+
+            <h2>3. Notice and Takedown Procedure</h2>
+            <p>If you are a copyright owner or an agent thereof and believe that any content on our Site infringes upon your copyrights, you may submit a written DMCA Takedown Notice to our Designated Copyright Agent containing the following information:</p>
+            <ul>
+                <li>A physical or electronic signature of a person authorized to act on behalf of the owner of the exclusive right that is allegedly infringed.</li>
+                <li>Identification of the copyrighted work claimed to have been infringed.</li>
+                <li>Identification of the material that is claimed to be infringing, <strong>including the specific URL on frontrowstream.live where the material is located</strong>.</li>
+                <li>Information reasonably sufficient to permit us to contact you (e.g., an address, telephone number, and email address).</li>
+                <li>A statement that you have a good faith belief that the use of the material in the manner complained of is not authorized by the copyright owner, its agent, or the law.</li>
+                <li>A statement that the information in the notification is accurate, and under penalty of perjury, that you are authorized to act on behalf of the owner of an exclusive right that is allegedly infringed.</li>
+            </ul>
+
+            <h2>4. Designated Copyright Agent Contact</h2>
+            <p>Send all DMCA notices to:<br>
+            <strong>Email:</strong> <a href="mailto:dmca@frontrowstream.live">dmca@frontrowstream.live</a><br>
+            <strong>Subject Line:</strong> DMCA Takedown Notice – [Name of Infringed Work]</p>
+
+            <h2>5. Our Response</h2>
+            <p>Upon receipt of a valid and complete DMCA notice, we will act expeditiously to remove or disable access to the specific URL linking to the allegedly infringing material. We will also notify the user who posted the link (if applicable) and provide them with an opportunity to file a counter-notice.</p>
+
+            <h2>6. Repeat Infringers</h2>
+            <p>In accordance with the DMCA, it is our policy to terminate the access of users who are determined to be repeat infringers of copyright.</p>
+        </article>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-border py-8 mt-10">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted">
+            <div class="flex items-center gap-2">
+                <div class="bg-brand text-white font-black text-xs px-1.5 py-0.5 rounded">FR</div>
+                <span class="font-bold text-white">FRONT ROW</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="terms.html" class="hover:text-white transition">Terms</a>
+                <a href="privacy.html" class="hover:text-white transition">Privacy</a>
+                <a href="dmca.html" class="hover:text-white transition">DMCA</a>
+                <a href="contact.html" class="hover:text-white transition">Contact</a>
+            </div>
+            <div class="text-xs">&copy; 2024 FRONT ROW. ALL RIGHTS RESERVED.</div>
+        </div>
+    </footer>
+
+</body>
+</html>

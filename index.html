@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Row - Live Sports Streaming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#e50914',
+                        dark: '#0a0a0a',
+                        card: '#111111',
+                        border: '#1f1f1f',
+                        muted: '#888888'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0a0a0a; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-white font-sans antialiased" x-data="appData()">
+
+    <!-- TOP NAVIGATION -->
+    <nav class="border-b border-border bg-dark/95 sticky top-0 z-50 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer" @click="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="bg-brand text-white font-black text-sm px-2 py-1 rounded tracking-tighter">FR</div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-brand text-[10px] font-bold tracking-widest uppercase">Front Row</span>
+                        <span class="text-white font-bold text-lg tracking-tight -mt-0.5">STREAM</span>
+                    </div>
+                </div>
+
+                <!-- Right Side Buttons -->
+                <div class="flex items-center gap-3">
+                    <!-- Live Counter -->
+                    <div class="hidden sm:flex items-center gap-2 bg-card border border-border px-3 py-1.5 rounded text-sm">
+                        <span class="text-brand font-bold text-xs">● LIVE</span>
+                        <span class="text-white font-bold" x-text="liveCount"></span>
+                    </div>
+                    
+                    <!-- Refresh Button -->
+                    <button @click="fetchMatches()" class="bg-brand hover:bg-red-700 text-white text-sm font-bold px-4 py-2 rounded transition flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        SYNC FEED
+                    </button>
+                    
+                    <!-- Telegram -->
+                    <a href="https://t.me/your_channel" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-[#29b6f6] p-2 rounded border border-border hover:border-[#29b6f6]/50 transition">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.26 4.202 13.37c-.642-.204-.655-.642.136-.953l10.857-4.19c.537-.194 1.006.131.367.02z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-6xl mx-auto px-6 lg:px-8 py-10">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-5xl md:text-6xl font-black tracking-tight mb-6">DISCOVERY</h1>
+            
+            <!-- Category Filter -->
+            <!-- FIX: Changed 'overflow-x-auto' to 'flex-wrap' so the dropdown isn't clipped -->
+            <div class="flex items-center gap-6 flex-wrap pb-2">
+                <button @click="activeCategory = 'live'; fetchMatches()" 
+                        :class="activeCategory === 'live' ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
+                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition">
+                    Live Events
+                </button>
+                <button @click="activeCategory = 'football'; fetchMatches()" 
+                        :class="activeCategory === 'football' ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
+                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition">
+                    Football
+                </button>
+                <button @click="activeCategory = 'basketball'; fetchMatches()" 
+                        :class="activeCategory === 'basketball' ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
+                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition">
+                    Basketball
+                </button>
+                <button @click="activeCategory = 'american-football'; fetchMatches()" 
+                        :class="activeCategory === 'american-football' ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
+                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition">
+                    American Football
+                </button>
+                
+                <!-- Others Dropdown -->
+                <div class="relative" x-data="{ dropdownOpen: false }">
+                    <button @click="dropdownOpen = !dropdownOpen" 
+                            :class="isOtherCategory() ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
+                            class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition flex items-center gap-1">
+                        Others
+                        <svg class="w-3 h-3 transition-transform" :class="{'rotate-180': dropdownOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div x-show="dropdownOpen" 
+                         @click.away="dropdownOpen = false"
+                         class="absolute top-full left-0 mt-2 w-48 bg-[#1a1a1a] border border-border rounded-lg shadow-2xl z-[60] overflow-hidden"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 transform -translate-y-2"
+                         x-transition:enter-end="opacity-100 transform translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 transform translate-y-0"
+                         x-transition:leave-end="opacity-0 transform -translate-y-2">
+                        <template x-for="cat in otherCategories" :key="cat.value">
+                            <button @click="activeCategory = cat.value; fetchMatches(); dropdownOpen = false"
+                                    :class="activeCategory === cat.value ? 'bg-brand/10 text-brand' : 'text-muted hover:bg-white/5 hover:text-white'"
+                                    class="w-full text-left px-4 py-3 text-sm font-medium transition flex items-center justify-between border-b border-border last:border-b-0"
+                                    x-text="cat.name">
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div x-show="loading" class="text-center py-20">
+            <div class="inline-block w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+            <p class="mt-4 text-muted text-sm">Loading...</p>
+        </div>
+
+        <!-- Error State -->
+        <div x-show="error" class="bg-brand/10 border border-brand/30 text-brand px-4 py-3 rounded text-sm" x-text="error"></div>
+
+        <!-- ============================================ -->
+        <!-- DISCOVERY VIEW (Grid of Featured Matches) -->
+        <!-- ============================================ -->
+        <div x-show="!loading && featuredMatches.length > 0">
+            
+            <!-- Featured Grid (2x2) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 border border-border rounded-lg overflow-hidden mb-12">
+                <template x-for="(match, index) in featuredMatches" :key="match.id">
+                    <div class="p-8 border-b border-border md:border-r cursor-pointer hover:bg-card/50 transition group" 
+                         :class="{'md:border-r-0': (index + 1) % 2 === 0, 'border-b-0': index >= featuredMatches.length - 2}"
+                         @click="openMatch(match)">
+                        
+                        <!-- Top Row: Badges + League -->
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex gap-2">
+                                <span x-show="match.isLive" class="bg-brand text-white text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span> LIVE
+                                </span>
+                                <span x-show="match.popular" class="border border-muted/50 text-muted text-[10px] font-bold px-2 py-1 rounded uppercase">
+                                    Popular
+                                </span>
+                            </div>
+                            <span class="text-muted text-xs font-bold tracking-wider uppercase" x-text="match.location"></span>
+                        </div>
+
+                        <!-- Match Title -->
+                        <h2 class="text-3xl md:text-4xl font-black leading-tight mb-6 group-hover:text-white transition" x-text="match.title"></h2>
+
+                        <!-- Scheduled For -->
+                        <div class="text-xs text-muted font-bold tracking-wider uppercase mb-1">Scheduled For</div>
+                        <div class="text-lg font-semibold" x-text="match.date"></div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- TIMELINE VIEW (List Grouped by Date) -->
+            <!-- ============================================ -->
+            <div>
+                <h2 class="text-3xl font-black tracking-tight mb-6">SCHEDULE</h2>
+                
+                <template x-for="(day, dayIndex) in groupedMatches" :key="dayIndex">
+                    <div class="mb-8">
+                        <!-- Date Header -->
+                        <div class="flex justify-between items-center py-3 px-4 bg-card border border-border rounded-t-lg">
+                            <span class="text-sm font-bold tracking-wider uppercase" x-text="day.label"></span>
+                            <span class="text-xs text-muted font-bold" x-text="day.matches.length + ' EVENTS'"></span>
+                        </div>
+
+                        <!-- Matches List -->
+                        <div class="border border-border border-t-0 rounded-b-lg overflow-hidden">
+                            <template x-for="(match, matchIndex) in day.matches" :key="match.id">
+                                <div class="flex items-center justify-between py-5 px-4 border-b border-border last:border-b-0 hover:bg-card/30 transition cursor-pointer group" @click="openMatch(match)">
+                                    
+                                    <!-- Time -->
+                                    <div class="w-20 flex-shrink-0">
+                                        <span class="text-xl font-bold" x-text="match.time"></span>
+                                    </div>
+
+                                    <!-- Match Info -->
+                                    <div class="flex-1 min-w-0 px-4">
+                                        <h3 class="text-lg font-bold truncate group-hover:text-brand transition" x-text="match.title"></h3>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span x-show="match.isLive" class="bg-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+                                                <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> LIVE
+                                            </span>
+                                            <span class="text-xs text-muted font-bold tracking-wider uppercase" x-text="match.location"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Button -->
+                                    <div class="flex-shrink-0">
+                                        <button x-show="match.isLive" class="border border-muted/50 text-white text-xs font-bold px-4 py-2 rounded hover:border-brand hover:text-brand transition">
+                                            WATCH LIVE
+                                        </button>
+                                        <button x-show="!match.isLive" class="border border-muted/30 text-muted text-xs font-bold px-4 py-2 rounded hover:border-white hover:text-white transition">
+                                            SET REMINDER
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div x-show="!loading && featuredMatches.length === 0" class="text-center py-20 text-muted">
+            <p class="text-lg">No matches found</p>
+            <p class="text-sm mt-2">Try selecting a different category</p>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-border py-8 mt-10">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted">
+            
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer" @click="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="bg-brand text-white font-black text-sm px-2 py-1 rounded tracking-tighter">FR</div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-brand text-[10px] font-bold tracking-widest uppercase">Front Row</span>
+                        <span class="text-white font-bold text-lg tracking-tight -mt-0.5">STREAM</span>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <a href="privacy.html" class="hover:text-white transition">Privacy</a>
+                    <a href="terms.html" class="hover:text-white transition">Terms</a>
+                    <a href="dmca.html" class="hover:text-white transition">DMCA</a>
+                    <a href="contact.html" class="hover:text-white transition">Contact</a>
+                    
+                </div>
+                <div>
+                    <a href="https://t.me/your_channel" target="_blank" class="inline-flex items-center gap-1.5 hover:text-[#29b6f6] transition">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#29b6f6"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.26 4.202 13.37c-.642-.204-.655-.642.136-.953l10.857-4.19c.537-.194 1.006.131.367.02z"/></svg>
+                        Telegram
+                    </a>
+                </div>
+        </div>
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 mt-6 text-center text-xs text-muted">
+            <div class="text-xs">&copy; 2026 FRONT ROW STREAM. ALL RIGHTS RESERVED.</div>
+        </div>
+    </footer>
+
+    <!-- LOGIC -->
+    <script>
+        function appData() {
+            return {
+                activeCategory: 'live',
+                categories: [],
+                otherCategories: [],
+                matches: [],
+                featuredMatches: [],
+                groupedMatches: [],
+                liveCount: 0,
+                loading: false,
+                error: null,
+
+                async init() {
+                    await this.fetchCategories();
+                    await this.fetchMatches();
+                },
+
+                isOtherCategory() {
+                    return this.otherCategories.some(cat => cat.value === this.activeCategory);
+                },
+
+                async fetchCategories() {
+                    try {
+                        const res = await fetch('./api/sports.php');
+                        if (!res.ok) throw new Error('Failed');
+                        const data = await res.json();
+                        
+                        const allCategories = data.map(sport => ({
+                            value: sport.slug || sport.id || sport.name.toLowerCase().replace(/\s+/g, '-'),
+                            name: sport.name || sport.title || sport
+                        }));
+
+                        // Define our main categories
+                        const mainCategories = ['football', 'basketball', 'american-football'];
+                        
+                        // Filter out main categories for the "Others" dropdown
+                        this.otherCategories = allCategories.filter(cat => 
+                            !mainCategories.includes(cat.value) && cat.value !== 'live'
+                        );
+
+                        // Combine with main categories for full list
+                        this.categories = [
+                            { value: 'live', name: 'All Live Events' },
+                            ...allCategories
+                        ];
+                    } catch (e) {
+                        // Fallback categories
+                        this.otherCategories = [
+                            { value: 'tennis', name: 'Tennis' },
+                            { value: 'mma', name: 'MMA' },
+                            { value: 'cricket', name: 'Cricket' },
+                            { value: 'rugby', name: 'Rugby' }
+                        ];
+                    }
+                },
+
+                async fetchMatches() {
+                    this.loading = true;
+                    this.error = null;
+                    try {
+                        const res = await fetch(`./api/matches.php?cat=${this.activeCategory}`);
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        
+                        const data = await res.json();
+                        const rawMatches = Array.isArray(data) ? data : (data.matches || data.data || []);
+
+                        this.matches = rawMatches.map(match => {
+                            const isLive = new Date(match.date) < new Date();
+                            const cat = (match.category || match.sport || this.activeCategory).toLowerCase();
+                            const dateObj = new Date(match.date);
+                            
+                            return {
+                                id: match.id,
+                                title: match.title || `${match.teams?.home?.name || 'Team A'} vs ${match.teams?.away?.name || 'Team B'}`,
+                                category: cat,
+                                isLive: isLive,
+                                popular: match.popular === true || match.popular === '1' || match.popular === 1,
+                                time: dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+                                date: dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                                dateLabel: dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+                                location: match.league || match.competition || cat.toUpperCase(),
+                                sources: match.sources || []
+                            };
+                        });
+
+                        this.liveCount = this.matches.filter(m => m.isLive).length;
+
+                        // DISCOVERY: Just take first 4 matches (no popular sorting)
+                        // Only sort by live status to show live matches first
+                        const sorted = [...this.matches].sort((a, b) => {
+                            if (a.isLive && !b.isLive) return -1;
+                            if (!a.isLive && b.isLive) return 1;
+                            return 0;
+                        });
+                        this.featuredMatches = sorted.slice(0, 4);
+
+                        // TIMELINE: Group by date (show all matches, not just featured)
+                        this.groupedMatches = this.groupMatchesByDate(this.matches);
+
+                    } catch (e) {
+                        console.error(e);
+                        this.error = e.message;
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                groupMatchesByDate(matches) {
+                    const groups = {};
+                    const today = new Date();
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+
+                    matches.forEach(match => {
+                        const matchDate = new Date(match.date);
+                        const dateKey = matchDate.toDateString();
+                        
+                        let label = match.dateLabel;
+                        if (matchDate.toDateString() === today.toDateString()) {
+                            label = 'Today, ' + matchDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                        } else if (matchDate.toDateString() === tomorrow.toDateString()) {
+                            label = 'Tomorrow, ' + matchDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                        }
+
+                        if (!groups[dateKey]) {
+                            groups[dateKey] = { label, matches: [] };
+                        }
+                        groups[dateKey].matches.push(match);
+                    });
+
+                    // Sort each day's matches by time
+                    return Object.values(groups).map(group => {
+                        group.matches.sort((a, b) => new Date(a.date) - new Date(b.date));
+                        return group;
+                    });
+                },
+
+                openMatch(match) {
+                    const firstSource = match.sources && match.sources.length > 0 ? match.sources[0].source : 'alpha';
+                    const sourceId = match.sources && match.sources.length > 0 ? match.sources[0].id : match.id;
+                    window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&isLive=${match.isLive}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
