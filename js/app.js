@@ -101,10 +101,15 @@ function appData() {
                 const data = await res.json();
                 const rawMatches = Array.isArray(data) ? data : (data.matches || data.data || []);
 
+                const now = Date.now();
+                const threeHoursMs = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+
                 this.matches = rawMatches.map(match => {
                     const timestamp = Number(match.date || match.time || Date.now());
-                    const dateObj = new Date(timestamp);
-                    const isLive = dateObj < new Date();
+                    
+                    // A match is ONLY live if it started in the past, but NOT more than 3 hours ago
+                    const isLive = (timestamp <= now) && (timestamp >= (now - threeHoursMs));
+                    
                     const cat = (match.category || match.sport || this.activeCategory).toLowerCase();
                     
                     return {
@@ -113,13 +118,16 @@ function appData() {
                         category: cat,
                         isLive: isLive,
                         popular: match.popular === true || match.popular === '1' || match.popular === 1,
-                        time: dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-                        date: dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                        dateLabel: dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+                        time: new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+                        date: new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                        dateLabel: new Date(timestamp).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
                         location: match.league || match.competition || cat.toUpperCase(),
                         sources: match.sources || [],
                         timestamp: timestamp
                     };
+                }).filter(match => {
+                    // 👇 COMPLETELY HIDE matches that started more than 3 hours ago
+                    return match.timestamp >= (now - threeHoursMs);
                 });
 
                 this.liveCount = this.matches.filter(m => m.isLive).length;
@@ -188,8 +196,8 @@ function appData() {
             const firstSource = match.sources && match.sources.length > 0 ? match.sources[0].source : 'alpha';
             const sourceId = match.sources && match.sources.length > 0 ? match.sources[0].id : match.id;
             
-            // Added the date parameter to the URL
-            window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&isLive=${match.isLive}&date=${encodeURIComponent(match.date)}`;
+            // Added &ts=${match.timestamp} to the URL
+            window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&isLive=${match.isLive}&date=${encodeURIComponent(match.date)}&ts=${match.timestamp}`;
         }
     }
 }

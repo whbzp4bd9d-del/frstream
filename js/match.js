@@ -4,6 +4,7 @@ function matchPage() {
     return {
         loading: true,
         viewerCount: 0,
+        streamEnded: false,
         showToast: false,
         activeSource: null,
         currentStreamUrl: '',
@@ -38,12 +39,14 @@ function matchPage() {
             const id = params.get('id');
             const title = params.get('title') || 'Live Match';
             const isLiveParam = params.get('isLive');
-            const dateParam = params.get('date'); // 👈 NEW: Get the date from URL
+            const dateParam = params.get('date');
+            const tsParam = params.get('ts'); // 
 
             this.match.title = decodeURIComponent(title);
             this.match.isLive = (isLiveParam === 'true');
-            
             this.match.date = dateParam ? decodeURIComponent(dateParam) : 'Date TBD';
+            this.match.startTime = tsParam ? Number(tsParam) : Date.now(); 
+
             document.title = `${this.match.title} | Live Stream & Stats - Frstream`;
 
             if (source && id) {
@@ -75,7 +78,16 @@ function matchPage() {
                     const rawViews = streams[0].views || streams[0].viewers || 0;
                     this.viewerCount = parseInt(rawViews) || 0;
 
+                    // 👇 NEW: Check if stream is dead (Started >2 hours ago AND 0 views)
+                    const twoHoursMs = 2 * 60 * 60 * 1000;
+                    if (this.match.startTime < (Date.now() - twoHoursMs) && this.viewerCount === 0) {
+                        this.streamEnded = true;
+                        this.loading = false;
+                        return; // Stop loading the player
+                    }
+
                     this.selectSource(this.sources[0]);
+
                 } else {
                     this.loading = false;
                 }

@@ -161,7 +161,7 @@
                     </div>
                     
                     <iframe 
-                        x-show="!loading"
+                        x-show="!loading && !streamEnded"
                         :src="currentStreamUrl" 
                         class="w-full h-full"
                         frameborder="0"
@@ -171,8 +171,17 @@
                     </iframe>
                 </div>
 
+                <!-- Stream Ended State -->
+                <div x-show="streamEnded" class="bg-card border border-border rounded-lg p-10 text-center my-8">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                    </svg>
+                    <h2 class="text-2xl font-bold mb-2">Live Stream Has Ended</h2>
+                    <p class="text-muted mb-6">This event has concluded. View other recommended live streams below.</p>
+                </div>
+
                 <!-- IF UPCOMING: Show Placeholder -->
-                <div x-show="!match.isLive" class="relative aspect-video bg-card border border-border rounded-lg flex flex-col items-center justify-center text-center p-6">
+                <div x-show="!match.isLive && !streamEnded" class="relative aspect-video bg-card border border-border rounded-lg flex flex-col items-center justify-center text-center p-6">
                     <div class="border border-border p-4 rounded-full mb-4">
                         <svg class="w-10 h-10 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
