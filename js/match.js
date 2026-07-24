@@ -4,6 +4,7 @@ function matchPage() {
     return {
         loading: true,
         viewerCount: 0,
+        showToast: false,
         activeSource: null,
         currentStreamUrl: '',
         match: { title: 'Loading...', location: '', date: '', isLive: false },
@@ -118,6 +119,32 @@ function matchPage() {
             if (count >= 1000000) return (count / 1000000).toFixed(1) + 'M';
             if (count >= 1000) return (count / 1000).toFixed(1) + 'K';
             return count.toString();
+        },
+        
+        async shareMatch() {
+            const shareData = {
+                title: this.match.title,
+                text: `Watch ${this.match.title} live on Front Row Stream!`,
+                url: window.location.href
+            };
+
+            // Try native mobile share sheet first
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('Share canceled or failed', err);
+                }
+            } else {
+                // Fallback for desktop: Copy to clipboard
+                try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    this.showToast = true;
+                    setTimeout(() => this.showToast = false, 2500); // Hide after 2.5s
+                } catch (err) {
+                    console.error('Failed to copy', err);
+                }
+            }
         },
 
         openRecommendedMatch(match) {
