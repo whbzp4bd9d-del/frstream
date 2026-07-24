@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="canonical" href="https://frstream.live/dmca.html">
+    <link rel="canonical" href="https://frstream.live/dmca">
     <meta name="description" content="Front Row Stream DMCA and Copyright Policy. We do not host content. Learn how to submit a valid takedown notice to our designated agent.">
     <title>DMCA & Copyright Policy - Front Row Stream</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -142,6 +142,14 @@
             <div class="text-xs">&copy; 2026 FRONT ROW STREAM. ALL RIGHTS RESERVED.</div>
         </div>
     </footer>
+
+    <script>
+        if (location.hostname === 'frstream.live') {
+            document.querySelectorAll('a[href$=".html"]').forEach(link => {
+                link.href = link.href.replace(/\.html$/, '');
+            });
+        }
+    </script>
 
 </body>
 </html>

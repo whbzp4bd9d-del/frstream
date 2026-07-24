@@ -6,20 +6,24 @@
       <changefreq>hourly</changefreq>
       <priority>1.0</priority>
    </url>
-   <url>
-      <loc>https://frstream.live/terms.html</loc>
+     <url>
+      <loc>https://frstream.live/terms</loc>
+      <changefreq>monthly</changefreq>
       <priority>0.5</priority>
    </url>
    <url>
-      <loc>https://frstream.live/privacy.html</loc>
+      <loc>https://frstream.live/privacy</loc>
+      <changefreq>monthly</changefreq>
       <priority>0.5</priority>
    </url>
    <url>
-      <loc>https://frstream.live/dmca.html</loc>
+      <loc>https://frstream.live/dmca</loc>
+      <changefreq>monthly</changefreq>
       <priority>0.5</priority>
    </url>
    <url>
-      <loc>https://frstream.live/contact.html</loc>
+      <loc>https://frstream.live/contact</loc>
+      <changefreq>monthly</changefreq>
       <priority>0.5</priority>
    </url>
 </urlset>

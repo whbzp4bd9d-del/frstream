@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="canonical" href="https://frstream.live/privacy.html">
+    <link rel="canonical" href="https://frstream.live/privacy">
     <meta name="description" content="Privacy Policy for Front Row Stream. Learn how we handle log data, cookies, and third-party embedded content privacy.">
     <title>Privacy Policy - Front Row Stream</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -143,6 +143,14 @@
             <div class="text-xs">&copy; 2026 FRONT ROW STREAM. ALL RIGHTS RESERVED.</div>
         </div>
     </footer>
+
+    <script>
+        if (location.hostname === 'frstream.live') {
+            document.querySelectorAll('a[href$=".html"]').forEach(link => {
+                link.href = link.href.replace(/\.html$/, '');
+            });
+        }
+    </script>
 
 </body>
 </html>

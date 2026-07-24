@@ -272,5 +272,12 @@
         </div>
     </div>
     <script  src="js/match.js"></script>
+    <script>
+        if (location.hostname === 'frstream.live') {
+            document.querySelectorAll('a[href$=".html"]').forEach(link => {
+                link.href = link.href.replace(/\.html$/, '');
+            });
+        }
+    </script>
 </body>
 </html>
