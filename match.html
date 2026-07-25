@@ -154,10 +154,10 @@
                 </div>
             </div>
 
-            <!-- Video Player Area -->
-            <div class="mb-10">
+            <!-- Video Player Area (Only if Live)  -->
+            <div x-show="match.isLive" class="mb-10">
                 <!-- IF LIVE: Show Player -->
-                <div x-show="match.isLive" class="relative aspect-video bg-black border border-border rounded-lg overflow-hidden">
+                <div class="relative aspect-video bg-black border border-border rounded-lg overflow-hidden">
                     <div x-show="loading" class="absolute inset-0 flex items-center justify-center bg-dark/90 z-10">
                         <div class="flex flex-col items-center gap-3">
                             <div class="w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
@@ -166,7 +166,7 @@
                     </div>
                     
                     <iframe 
-                        x-show="!loading && !streamEnded"
+                        x-show="!loading"
                         :src="currentStreamUrl" 
                         class="w-full h-full"
                         frameborder="0"
@@ -175,30 +175,35 @@
                         @load="loading = false">
                     </iframe>
                 </div>
-
-                <!-- Stream Ended State -->
-                <div x-show="streamEnded" class="bg-card border border-border rounded-lg p-10 text-center my-8">
+            </div>
+            
+            <!-- Stream Ended State -->
+            <div x-show="streamEnded" class="mb-10">
+                <div class="bg-card border border-border rounded-lg p-10 text-center my-8">
                     <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
                     </svg>
                     <h2 class="text-2xl font-bold mb-2">Live Stream Has Ended</h2>
                     <p class="text-muted mb-6">This event has concluded. View other recommended live streams below.</p>
                 </div>
-
-                <!-- IF UPCOMING: Show Placeholder -->
-                <div x-show="!match.isLive && !streamEnded" class="relative aspect-video bg-card border border-border rounded-lg flex flex-col items-center justify-center text-center p-6">
-                    <div class="border border-border p-4 rounded-full mb-4">
-                        <svg class="w-10 h-10 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Broadcast has not started</h3>
-                    <p class="text-muted text-sm max-w-md">
-                        Please check back at <span class="text-white font-semibold" x-text="match.date"></span> or watch a recommended match below.
-                    </p>
+            </div>
+            
+            <!-- Match Not Started State -->
+            <div x-show="matchNotStarted" class="bg-card border border-border rounded-lg p-10 text-center my-8">
+                <svg class="w-16 h-16 mx-auto mb-4 text-brand animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h2 class="text-2xl font-bold mb-2">Waiting for Kickoff</h2>
+                <p class="text-muted mb-2">This broadcast hasn't started yet.</p>
+                <p class="text-sm text-brand font-bold" x-text="'Starts at: ' + match.date"></p>
+                
+                <div class="mt-6">
+                    <p class="text-xs text-muted uppercase tracking-widest mb-3">While you wait, check out these popular matches</p>
                 </div>
             </div>
 
 
-            <!-- Recommended Matches (If Upcoming) -->
+            <!-- Recommended Matches (If Match Not Started) -->
             <div x-show="!match.isLive && recommendedMatches.length > 0" class="mb-12">
                 <h2 class="text-xs font-bold tracking-widest uppercase text-muted mb-6">Recommended Live Matches</h2>
                 

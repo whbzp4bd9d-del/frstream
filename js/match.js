@@ -7,6 +7,7 @@ function matchPage() {
         streamEnded: false,
         showToast: false,
         activeSource: null,
+        matchNotStarted: false,
         currentStreamUrl: '',
         match: { title: 'Loading...', location: 'Live Event', date: '', isLive: false, startTime: Date.now() },
         sources: [],
@@ -40,12 +41,31 @@ function matchPage() {
             const tsParam = params.get('ts');
 
             this.match.title = decodeURIComponent(title);
-            this.match.startTime = tsParam ? Number(tsParam) : Date.now();
+            
+            // 🚨 SAFETY: Ensure we have a valid number. If ts is missing/invalid, default to now.
+            let startTime = tsParam ? Number(tsParam) : 0;
+            if (isNaN(startTime) || startTime === 0) {
+                startTime = Date.now(); // Fallback so the page doesn't break
+            }
+            this.match.startTime = startTime;
 
-            // Calculate isLive dynamically (Started in past, but within last 3 hours)
             const now = Date.now();
-            const threeHoursMs = 3 * 60 * 60 * 1000;
-            this.match.isLive = (this.match.startTime <= now) && (this.match.startTime >= (now - threeHoursMs));
+            const fifteenMinsMs = 15 * 60 * 1000; // 15 minutes in milliseconds
+            const threeHoursMs = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+
+            // 1. Is it in the future? (Only "Not Started" if it's MORE than 15 mins away)
+            this.matchNotStarted = this.match.startTime > (now + fifteenMinsMs);
+            
+            // 2. Is it live? (Starting within 15 mins, OR already started, AND not older than 3 hours)
+            this.match.isLive = !this.matchNotStarted && (this.match.startTime >= (now - threeHoursMs));
+
+            // Optional: Keep this console log for a few days to verify it's working perfectly
+            console.log("Match Time Debug:", { 
+                startTime: new Date(this.match.startTime).toLocaleString(),
+                now: new Date(now).toLocaleString(),
+                isLive: this.match.isLive, 
+                notStarted: this.matchNotStarted 
+            });
 
             if (source && id) {
                 await this.loadStream(source, id);
@@ -61,7 +81,7 @@ function matchPage() {
         async loadStream(source, id) {
             this.loading = true;
             try {
-                const res = await fetch(`https://frstream.live/api/stream.php?source=${source}&id=${id}`);
+                const res = await fetch(`https://frontrowstream.live/api/stream.php?source=${source}&id=${id}`);
                 const data = await res.json();
                 const streams = Array.isArray(data) ? data : [];
 
@@ -76,9 +96,9 @@ function matchPage() {
                     const rawViews = streams[0].views || streams[0].viewers || 0;
                     this.viewerCount = parseInt(rawViews) || 0;
 
-                    // 🚨 STREAM ENDED CHECK: Started >2 hours ago AND 0 views
-                    const twoHoursMs = 2 * 60 * 60 * 1000;
-                    if (this.match.startTime < (Date.now() - twoHoursMs) && this.viewerCount === 0) {
+                    // 🚨 STREAM ENDED CHECK: Started >3 hours ago AND 0 views
+                    const threeHoursMs = 3 * 60 * 60 * 1000;
+                    if (!this.matchNotStarted && this.match.startTime < (Date.now() - threeHoursMs) && this.viewerCount === 0) {
                         this.streamEnded = true;
                         this.loading = false;
                         return; // Stop loading the player
@@ -96,7 +116,7 @@ function matchPage() {
 
         async fetchRecommendedMatches() {
             try {
-                const res = await fetch('https://frstream.live/api/matches.php?cat=live');
+                const res = await fetch('https://frontrowstream.live/api/matches.php?cat=live');
                 if (!res.ok) return;
                 const data = await res.json();
                 const rawMatches = Array.isArray(data) ? data : (data.matches || []);
