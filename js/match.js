@@ -33,32 +33,39 @@ function matchPage() {
             ];
         },
 
-        async init() {
-            const params = new URLSearchParams(window.location.search);
-            const source = params.get('source');
-            const id = params.get('id');
-            const title = params.get('title') || 'Live Match';
-            const isLiveParam = params.get('isLive');
-            const dateParam = params.get('date');
-            const tsParam = params.get('ts'); // 
+                async init() {
+                    const params = new URLSearchParams(window.location.search);
+                    const source = params.get('source');
+                    const id = params.get('id');
+                    const title = params.get('title') || 'Live Match';
+                    const dateParam = params.get('date');
+                    const tsParam = params.get('ts');
 
-            this.match.title = decodeURIComponent(title);
-            this.match.isLive = (isLiveParam === 'true');
-            this.match.date = dateParam ? decodeURIComponent(dateParam) : 'Date TBD';
-            this.match.startTime = tsParam ? Number(tsParam) : Date.now(); 
+                    this.match.title = decodeURIComponent(title);
+                    this.match.date = dateParam ? decodeURIComponent(dateParam) : 'Date TBD';
+                    this.match.startTime = tsParam ? Number(tsParam) : Date.now();
 
-            document.title = `${this.match.title} | Live Stream & Stats - Frstream`;
+                    // 🚨 THE FIX: Calculate isLive dynamically based on the timestamp.
+                    // We completely IGNORE the static 'isLive' URL parameter.
+                    const now = Date.now();
+                    const threeHoursMs = 3 * 60 * 60 * 1000;
+                    
+                    // If the match started in the past, but not more than 3 hours ago, it is LIVE.
+                    const isActuallyLive = (this.match.startTime <= now) && (this.match.startTime >= (now - threeHoursMs));
+                    
+                    // Force the state to be true if the math says it's live
+                    this.match.isLive = isActuallyLive;
 
-            if (source && id) {
-                await this.loadStream(source, id);
-            } else {
-                this.loading = false;
-            }
+                    if (source && id) {
+                        await this.loadStream(source, id);
+                    } else {
+                        this.loading = false;
+                    }
 
-            if (!this.match.isLive) {
-                await this.fetchRecommendedMatches();
-            }
-        },
+                    if (!this.match.isLive) {
+                        await this.fetchRecommendedMatches();
+                    }
+                },
 
         async loadStream(source, id) {
             this.loading = true;
