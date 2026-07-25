@@ -196,8 +196,8 @@ function appData() {
             const firstSource = match.sources && match.sources.length > 0 ? match.sources[0].source : 'alpha';
             const sourceId = match.sources && match.sources.length > 0 ? match.sources[0].id : match.id;
             
-            // Removed isLive parameter. The match page will calculate it from 'ts'
-            window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&date=${encodeURIComponent(match.date)}&ts=${match.timestamp}`;
+            // Clean URL + timestamp for "Stream Ended" logic
+            window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&ts=${match.timestamp}`;
         }
     }
 }

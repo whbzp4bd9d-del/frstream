@@ -8,7 +8,7 @@ function matchPage() {
         showToast: false,
         activeSource: null,
         currentStreamUrl: '',
-        match: { title: 'Loading...', location: '', date: '', isLive: false },
+        match: { title: 'Loading...', location: 'Live Event', date: '', isLive: false, startTime: Date.now() },
         sources: [],
         recommendedMatches: [],
         rawStats: {
@@ -17,7 +17,6 @@ function matchPage() {
             totalShots: { home: 18, away: 11 },
             corners: { home: 7, away: 4 }
         },
-        player: { name: 'Player Name', team: 'Team', goals: 0, rating: 0.0, passes: 0, tackles: 0 },
 
         get statsList() {
             const format = (h, a) => {
@@ -33,44 +32,36 @@ function matchPage() {
             ];
         },
 
-                async init() {
-                    const params = new URLSearchParams(window.location.search);
-                    const source = params.get('source');
-                    const id = params.get('id');
-                    const title = params.get('title') || 'Live Match';
-                    const dateParam = params.get('date');
-                    const tsParam = params.get('ts');
+        async init() {
+            const params = new URLSearchParams(window.location.search);
+            const source = params.get('source');
+            const id = params.get('id');
+            const title = params.get('title') || 'Live Match';
+            const tsParam = params.get('ts');
 
-                    this.match.title = decodeURIComponent(title);
-                    this.match.date = dateParam ? decodeURIComponent(dateParam) : 'Date TBD';
-                    this.match.startTime = tsParam ? Number(tsParam) : Date.now();
+            this.match.title = decodeURIComponent(title);
+            this.match.startTime = tsParam ? Number(tsParam) : Date.now();
 
-                    // 🚨 THE FIX: Calculate isLive dynamically based on the timestamp.
-                    // We completely IGNORE the static 'isLive' URL parameter.
-                    const now = Date.now();
-                    const threeHoursMs = 3 * 60 * 60 * 1000;
-                    
-                    // If the match started in the past, but not more than 3 hours ago, it is LIVE.
-                    const isActuallyLive = (this.match.startTime <= now) && (this.match.startTime >= (now - threeHoursMs));
-                    
-                    // Force the state to be true if the math says it's live
-                    this.match.isLive = isActuallyLive;
+            // Calculate isLive dynamically (Started in past, but within last 3 hours)
+            const now = Date.now();
+            const threeHoursMs = 3 * 60 * 60 * 1000;
+            this.match.isLive = (this.match.startTime <= now) && (this.match.startTime >= (now - threeHoursMs));
 
-                    if (source && id) {
-                        await this.loadStream(source, id);
-                    } else {
-                        this.loading = false;
-                    }
+            if (source && id) {
+                await this.loadStream(source, id);
+            } else {
+                this.loading = false;
+            }
 
-                    if (!this.match.isLive) {
-                        await this.fetchRecommendedMatches();
-                    }
-                },
+            if (!this.match.isLive) {
+                await this.fetchRecommendedMatches();
+            }
+        },
 
         async loadStream(source, id) {
             this.loading = true;
             try {
-                const res = await fetch(`https://frontrowstream.live/api/stream.php?source=${source}&id=${id}`);
+                const res = await fetch(`https://frstream.live/api/stream.php?source=${source}&id=${id}`);
                 const data = await res.json();
                 const streams = Array.isArray(data) ? data : [];
 
@@ -78,14 +69,14 @@ function matchPage() {
                     this.sources = streams.map((s, index) => ({
                         id: `source_${index}`,
                         name: s.source ? s.source.charAt(0).toUpperCase() + s.source.slice(1) : `Server ${index + 1}`,
-                        quality: index === 0 ? 'HD' : 'SD',
+                        quality: (s.hd === true) ? 'HD' : 'SD',
                         url: s.embedUrl,
                     }));
 
                     const rawViews = streams[0].views || streams[0].viewers || 0;
                     this.viewerCount = parseInt(rawViews) || 0;
 
-                    // 👇 NEW: Check if stream is dead (Started >2 hours ago AND 0 views)
+                    // 🚨 STREAM ENDED CHECK: Started >2 hours ago AND 0 views
                     const twoHoursMs = 2 * 60 * 60 * 1000;
                     if (this.match.startTime < (Date.now() - twoHoursMs) && this.viewerCount === 0) {
                         this.streamEnded = true;
@@ -94,31 +85,30 @@ function matchPage() {
                     }
 
                     this.selectSource(this.sources[0]);
-
                 } else {
                     this.loading = false;
                 }
             } catch (e) {
-                console.error(e);
+                console.error('Stream load error:', e);
                 this.loading = false;
             }
         },
 
         async fetchRecommendedMatches() {
             try {
-                const res = await fetch('https://frontrowstream.live/api/matches.php?cat=live');
+                const res = await fetch('https://frstream.live/api/matches.php?cat=live');
                 if (!res.ok) return;
                 const data = await res.json();
                 const rawMatches = Array.isArray(data) ? data : (data.matches || []);
 
                 this.recommendedMatches = rawMatches
-                    .filter(m => m.popular === true || m.popular === '1') 
+                    .filter(m => m.popular === true || m.popular === '1' || m.popular === 1) 
                     .slice(0, 5)
                     .map(match => {
                         const dateObj = new Date(Number(match.date || match.time || Date.now()));
                         return {
                             id: match.id,
-                            title: match.title || `${match.teams?.home?.name} vs ${match.teams?.away?.name}`,
+                            title: match.title || 'Live Match',
                             location: match.league || match.competition,
                             time: dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
                             sources: match.sources || []
@@ -131,6 +121,7 @@ function matchPage() {
             this.loading = true;
             this.activeSource = source;
             this.currentStreamUrl = source.url;
+            setTimeout(() => { this.loading = false; }, 300);
         },
 
         formatViewers(count) {
@@ -147,29 +138,21 @@ function matchPage() {
                 url: window.location.href
             };
 
-            // Try native mobile share sheet first
             if (navigator.share) {
-                try {
-                    await navigator.share(shareData);
-                } catch (err) {
-                    console.log('Share canceled or failed', err);
-                }
+                try { await navigator.share(shareData); } catch (err) { console.log('Share canceled', err); }
             } else {
-                // Fallback for desktop: Copy to clipboard
                 try {
                     await navigator.clipboard.writeText(window.location.href);
                     this.showToast = true;
-                    setTimeout(() => this.showToast = false, 2500); // Hide after 2.5s
-                } catch (err) {
-                    console.error('Failed to copy', err);
-                }
+                    setTimeout(() => this.showToast = false, 2500);
+                } catch (err) { console.error('Failed to copy', err); }
             }
         },
 
         openRecommendedMatch(match) {
             const firstSource = match.sources && match.sources.length > 0 ? match.sources[0].source : 'alpha';
             const sourceId = match.sources && match.sources.length > 0 ? match.sources[0].id : match.id;
-            window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&isLive=true`;
+            window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&ts=${match.timestamp || Date.now()}`;
         }
     }
 }
