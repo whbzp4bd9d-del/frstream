@@ -72,6 +72,7 @@
     </script>
 </head>
 <body class="text-white font-sans antialiased" x-data="appData()">
+    
 
     <!-- TOP NAVIGATION -->
     <nav class="border-b border-border bg-dark/95 sticky top-0 z-50 backdrop-blur">
@@ -388,6 +389,7 @@
             <p class="text-sm mt-2" x-text="searchQuery ? 'Try a different search term' : 'Try selecting a different category'"></p>
         </div>
 
+
     </main>
 
     <!-- FOOTER -->
@@ -421,6 +423,127 @@
         </div>
     </footer>
     <script src="js/app.js"></script>
+    <!-- Telegram First Visit Modal -->
+    <div x-data="telegramModal()" 
+        x-init="init()"
+        x-show="showModal"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-[200] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm"
+        @click.self="closeModal()">
+        
+        <div x-show="showModal"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+            x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+            class="bg-[#1a1a1a] border border-border rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+            
+            <!-- Header with Gradient -->
+            <div class="bg-gradient-to-r from-[#0088cc] to-[#0099dd] p-6 text-center relative">
+                <button @click="closeModal()"
+                        class="absolute top-4 right-4 text-white/80 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <!-- Telegram Icon -->
+                <div class="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                    </svg>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-white mb-2">🚨 Get Instant Match Alerts!</h2>
+                <p class="text-white/90 text-sm">Never miss a goal from your favorite teams</p>
+            </div>
+            
+            <!-- Body -->
+            <div class="p-6">
+                <!-- Features List -->
+                <div class="space-y-3 mb-6">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <p class="text-white font-semibold text-sm">⏰ 30-Minute Kickoff Reminders</p>
+                            <p class="text-muted text-xs">Get notified before every match starts</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <p class="text-white font-semibold text-sm">🔥 3-Minute "Starting Now" Alerts</p>
+                            <p class="text-muted text-xs">For top teams: Man Utd, Liverpool, Real Madrid & more</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-brand flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <div>
+                            <p class="text-white font-semibold text-sm"> Direct Stream Links</p>
+                            <p class="text-muted text-xs">One-click access to live streams</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CTA Button -->
+                <a href="https://t.me/frontrowstream" 
+                target="_blank"
+                @click="closeModal()"
+                class="block w-full bg-gradient-to-r from-[#0088cc] to-[#0099dd] hover:from-[#0099dd] hover:to-[#00aadd] text-white text-center font-bold py-4 rounded-lg transition shadow-lg transform hover:scale-[1.02]">
+                    Join Telegram Channel →
+                </a>
+                
+                <!-- Secondary Close -->
+                <button @click="closeModal()"
+                        class="w-full mt-3 text-muted hover:text-white text-sm transition">
+                    Maybe later
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Script -->
+    <script>
+    function telegramModal() {
+        return {
+            showModal: false,
+            
+            init() {
+                // Check if user has already dismissed the modal
+                const hasSeenModal = localStorage.getItem('telegramModalDismissed');
+                
+                // Show modal only if user hasn't seen it before
+                if (!hasSeenModal) {
+                    // Small delay for better UX
+                    setTimeout(() => {
+                        this.showModal = true;
+                    }, 1000);
+                }
+            },
+            
+            closeModal() {
+                this.showModal = false;
+                // Remember that user has seen/dismissed the modal
+                localStorage.setItem('telegramModalDismissed', 'true');
+            }
+        }
+    }
+    </script>
     <script>
         if (location.hostname === 'frstream.live') {
             document.querySelectorAll('a[href$=".html"]').forEach(link => {
