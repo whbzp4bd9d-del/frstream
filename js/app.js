@@ -22,7 +22,7 @@ function appData() {
                 return this.matches;
             }
             const query = this.searchQuery.toLowerCase().trim();
-            return this.matches.filter(match => {
+            return this.matches.filter(function(match) {
                 return (
                     match.title.toLowerCase().includes(query) ||
                     match.location.toLowerCase().includes(query) ||
@@ -33,7 +33,7 @@ function appData() {
 
         get filteredFeaturedMatches() {
             if (this.isSearching) return [];
-            const sorted = [...this.filteredMatches].sort((a, b) => {
+            const sorted = [...this.filteredMatches].sort(function(a, b) {
                 if (a.isLive && !b.isLive) return -1;
                 if (!a.isLive && b.isLive) return 1;
                 return 0;
@@ -43,8 +43,8 @@ function appData() {
 
         get remainingMatches() {
             if (this.isSearching) return this.filteredMatches;
-            const featuredIds = this.filteredFeaturedMatches.map(m => m.id);
-            return this.filteredMatches.filter(m => !featuredIds.includes(m.id));
+            const featuredIds = this.filteredFeaturedMatches.map(function(m) { return m.id; });
+            return this.filteredMatches.filter(function(m) { return !featuredIds.includes(m.id); });
         },
 
         get filteredGroupedMatches() {
@@ -52,12 +52,31 @@ function appData() {
         },
 
         async init() {
+            try {
+                const savedCategory = sessionStorage.getItem('activeCategory');
+                if (savedCategory) {
+                    this.activeCategory = savedCategory;
+                }
+            } catch (e) {
+                console.log('sessionStorage not available');
+            }
+            
             await this.fetchCategories();
             await this.fetchMatches();
         },
 
-        isOtherCategory() {
-            return this.otherCategories.some(cat => cat.value === this.activeCategory);
+        setCategory: function(cat) {
+            this.activeCategory = cat;
+            try {
+                sessionStorage.setItem('activeCategory', cat);
+            } catch (e) {
+                console.log('Could not save category');
+            }
+            this.fetchMatches();
+        },
+
+        isOtherCategory: function() {
+            return this.otherCategories.some(function(cat) { return cat.value === this.activeCategory; }.bind(this));
         },
 
         async fetchCategories() {
@@ -66,20 +85,21 @@ function appData() {
                 if (!res.ok) throw new Error('Failed to fetch categories');
                 const data = await res.json();
                 
-                const allCategories = data.map(sport => ({
-                    value: sport.slug || sport.id || sport.name.toLowerCase().replace(/\s+/g, '-'),
-                    name: sport.name || sport.title || sport
-                }));
+                const allCategories = data.map(function(sport) {
+                    return {
+                        value: sport.slug || sport.id || sport.name.toLowerCase().replace(/\s+/g, '-'),
+                        name: sport.name || sport.title || sport
+                    };
+                });
 
                 const mainCategories = ['football', 'basketball', 'american-football'];
-                this.otherCategories = allCategories.filter(cat => 
-                    !mainCategories.includes(cat.value) && cat.value !== 'live'
-                );
+                this.otherCategories = allCategories.filter(function(cat) { 
+                    return !mainCategories.includes(cat.value) && cat.value !== 'live';
+                });
 
                 this.categories = [
-                    { value: 'live', name: 'All Live Events' },
-                    ...allCategories
-                ];
+                    { value: 'live', name: 'All Live Events' }
+                ].concat(allCategories);
             } catch (e) {
                 console.error(e);
                 this.otherCategories = [
@@ -95,26 +115,23 @@ function appData() {
             this.loading = true;
             this.error = null;
             try {
-                const res = await fetch(`https://frontrowstream.live/api/matches.php?cat=${this.activeCategory}`);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const res = await fetch('https://frontrowstream.live/api/matches.php?cat=' + this.activeCategory);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 
                 const data = await res.json();
                 const rawMatches = Array.isArray(data) ? data : (data.matches || data.data || []);
 
                 const now = Date.now();
-                const threeHoursMs = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+                const threeHoursMs = 3 * 60 * 60 * 1000;
 
-                this.matches = rawMatches.map(match => {
+                this.matches = rawMatches.map(function(match) {
                     const timestamp = Number(match.date || match.time || Date.now());
-                    
-                    // A match is ONLY live if it started in the past, but NOT more than 3 hours ago
                     const isLive = (timestamp <= now) && (timestamp >= (now - threeHoursMs));
-                    
                     const cat = (match.category || match.sport || this.activeCategory).toLowerCase();
                     
                     return {
                         id: match.id,
-                        title: match.title || `${match.teams?.home?.name || 'Team A'} vs ${match.teams?.away?.name || 'Team B'}`,
+                        title: match.title || ((match.teams && match.teams.home ? match.teams.home.name : 'Team A') + ' vs ' + (match.teams && match.teams.away ? match.teams.away.name : 'Team B')),
                         category: cat,
                         isLive: isLive,
                         popular: match.popular === true || match.popular === '1' || match.popular === 1,
@@ -125,14 +142,13 @@ function appData() {
                         sources: match.sources || [],
                         timestamp: timestamp
                     };
-                }).filter(match => {
-                    // 👇 COMPLETELY HIDE matches that started more than 3 hours ago
+                }.bind(this)).filter(function(match) {
                     return match.timestamp >= (now - threeHoursMs);
                 });
 
-                this.liveCount = this.matches.filter(m => m.isLive).length;
+                this.liveCount = this.matches.filter(function(m) { return m.isLive; }).length;
 
-                const sorted = [...this.matches].sort((a, b) => {
+                const sorted = [...this.matches].sort(function(a, b) {
                     if (a.isLive && !b.isLive) return -1;
                     if (!a.isLive && b.isLive) return 1;
                     return 0;
@@ -148,7 +164,7 @@ function appData() {
             }
         },
 
-        groupMatchesByDate(matches) {
+        groupMatchesByDate: function(matches) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const tomorrow = new Date(today);
@@ -179,25 +195,26 @@ function appData() {
                 }
                 
                 if (!groups[label]) {
-                    groups[label] = { label, sortOrder, matches: [] };
+                    groups[label] = { label: label, sortOrder: sortOrder, matches: [] };
                 }
                 groups[label].matches.push(match);
             }
 
             return Object.values(groups)
-                .sort((a, b) => a.sortOrder - b.sortOrder)
-                .map(group => ({
-                    label: group.label,
-                    matches: group.matches.sort((a, b) => a.timestamp - b.timestamp)
-                }));
+                .sort(function(a, b) { return a.sortOrder - b.sortOrder; })
+                .map(function(group) {
+                    return {
+                        label: group.label,
+                        matches: group.matches.sort(function(a, b) { return a.timestamp - b.timestamp; })
+                    };
+                });
         },
 
-        openMatch(match) {
+        openMatch: function(match) {
             const firstSource = match.sources && match.sources.length > 0 ? match.sources[0].source : 'alpha';
             const sourceId = match.sources && match.sources.length > 0 ? match.sources[0].id : match.id;
             
-            // Clean URL + timestamp for "Stream Ended" logic
-            window.location.href = `match.html?source=${firstSource}&id=${sourceId}&title=${encodeURIComponent(match.title)}&ts=${match.timestamp}`;
+            window.location.href = 'match.html?source=' + firstSource + '&id=' + sourceId + '&title=' + encodeURIComponent(match.title) + '&ts=' + match.timestamp;
         }
     }
 }

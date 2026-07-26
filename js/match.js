@@ -42,24 +42,28 @@ function matchPage() {
 
             this.match.title = decodeURIComponent(title);
             
-            // 🚨 SAFETY: Ensure we have a valid number. If ts is missing/invalid, default to now.
+            // 🚨 SAFETY: Ensure we have a valid number
             let startTime = tsParam ? Number(tsParam) : 0;
             if (isNaN(startTime) || startTime === 0) {
-                startTime = Date.now(); // Fallback so the page doesn't break
+                startTime = Date.now();
             }
             this.match.startTime = startTime;
+            
+            // 👇 ADD THIS: Format the date from the timestamp
+            this.match.date = new Date(startTime).toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
 
             const now = Date.now();
-            const fifteenMinsMs = 15 * 60 * 1000; // 15 minutes in milliseconds
-            const threeHoursMs = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+            const fifteenMinsMs = 15 * 60 * 1000;
+            const threeHoursMs = 3 * 60 * 60 * 1000;
 
-            // 1. Is it in the future? (Only "Not Started" if it's MORE than 15 mins away)
             this.matchNotStarted = this.match.startTime > (now + fifteenMinsMs);
-            
-            // 2. Is it live? (Starting within 15 mins, OR already started, AND not older than 3 hours)
             this.match.isLive = !this.matchNotStarted && (this.match.startTime >= (now - threeHoursMs));
 
-            // Optional: Keep this console log for a few days to verify it's working perfectly
             console.log("Match Time Debug:", { 
                 startTime: new Date(this.match.startTime).toLocaleString(),
                 now: new Date(now).toLocaleString(),

@@ -150,24 +150,24 @@
             <!-- Category Filter -->
             <!-- FIX: Changed 'overflow-x-auto' to 'flex-wrap' so the dropdown isn't clipped -->
             <div class="flex items-center gap-6 flex-wrap pb-2">
-                <button @click="activeCategory = 'live'; fetchMatches()" 
+                <button @click="setCategory('live')" 
                         :class="activeCategory === 'live' ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
-                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition">
+                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition cursor-pointer">
                     Live Events
                 </button>
-                <button @click="activeCategory = 'football'; fetchMatches()" 
+                <button @click="setCategory('football')" 
                         :class="activeCategory === 'football' ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
-                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition">
+                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition cursor-pointer">
                     Football
                 </button>
-                <button @click="activeCategory = 'basketball'; fetchMatches()" 
+                <button @click="setCategory('basketball')" 
                         :class="activeCategory === 'basketball' ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
-                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition">
+                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition cursor-pointer">
                     Basketball
                 </button>
-                <button @click="activeCategory = 'american-football'; fetchMatches()" 
+                <button @click="setCategory('american-football')" 
                         :class="activeCategory === 'american-football' ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
-                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition">
+                        class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition cursor-pointer">
                     American Football
                 </button>
                 
@@ -175,25 +175,25 @@
                 <div class="relative" x-data="{ dropdownOpen: false }">
                     <button @click="dropdownOpen = !dropdownOpen" 
                             :class="isOtherCategory() ? 'text-white border-b-2 border-brand' : 'text-muted hover:text-white'"
-                            class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition flex items-center gap-1">
+                            class="pb-2 text-sm font-bold tracking-wider uppercase whitespace-nowrap transition flex items-center gap-1 cursor-pointer">
                         Others
                         <svg class="w-3 h-3 transition-transform" :class="{'rotate-180': dropdownOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     
                     <!-- Dropdown Menu -->
                     <div x-show="dropdownOpen" 
-                         @click.away="dropdownOpen = false"
-                         class="absolute top-full left-0 mt-2 w-48 bg-[#1a1a1a] border border-border rounded-lg shadow-2xl z-[60] overflow-hidden"
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 transform -translate-y-2"
-                         x-transition:enter-end="opacity-100 transform translate-y-0"
-                         x-transition:leave="transition ease-in duration-150"
-                         x-transition:leave-start="opacity-100 transform translate-y-0"
-                         x-transition:leave-end="opacity-0 transform -translate-y-2">
+                        @click.away="dropdownOpen = false"
+                        class="absolute top-full left-0 mt-2 w-48 bg-[#1a1a1a] border border-border rounded-lg shadow-2xl z-[60] overflow-hidden"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2">
                         <template x-for="cat in otherCategories" :key="cat.value">
-                            <button @click="activeCategory = cat.value; fetchMatches(); dropdownOpen = false"
+                            <button @click="setCategory(cat.value); dropdownOpen = false"
                                     :class="activeCategory === cat.value ? 'bg-brand/10 text-brand' : 'text-muted hover:bg-white/5 hover:text-white'"
-                                    class="w-full text-left px-4 py-3 text-sm font-medium transition flex items-center justify-between border-b border-border last:border-b-0"
+                                    class="w-full text-left px-4 py-3 text-sm font-medium transition flex items-center justify-between border-b border-border last:border-b-0 cursor-pointer"
                                     x-text="cat.name">
                             </button>
                         </template>
