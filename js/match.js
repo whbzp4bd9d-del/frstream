@@ -158,7 +158,7 @@ function matchPage() {
         async shareMatch() {
             const shareData = {
                 title: this.match.title,
-                text: `Watch ${this.match.title} live on Front Row Stream!`,
+                text: `Watch ${this.match.title} live Stream on FR Stream!`,
                 url: window.location.href
             };
 
