@@ -101,181 +101,196 @@
             <div class="inline-block w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
             <p class="mt-4 text-muted text-sm">Initializing stream...</p>
         </div>
+          
+        <!-- 🚨 404 EXPIRED STATE (Shows if match is > 12 hours old) -->
+        <div x-show="isExpired" x-cloak class="text-center py-20">
+            <h1 class="text-[120px] md:text-[180px] font-black text-brand leading-none tracking-tighter select-none">404</h1>
+            <p class="text-xl md:text-2xl font-bold text-white mb-3">Page Not Found</p>
+            <p class="text-gray-500 text-sm md:text-base mb-8 max-w-md mx-auto">
+                This page doesn't exist or has been moved. Please check the schedule for upcoming Events.
+            </p>
+            <a href="index.html" class="inline-flex items-center gap-2 bg-brand hover:bg-red-600 text-white font-bold px-6 py-3 rounded-lg transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Schedule
+            </a>
+        </div>
 
-        <div x-show="!loading || currentStreamUrl">
-            
-            <!-- Match Header -->
-            <div class="mb-8">
-                <div class="flex justify-between items-center mb-8">
-                    <a href="index.html" class="inline-flex items-center gap-2 text-muted hover:text-brand transition text-xs font-bold tracking-widest uppercase group">
-                        <svg class="w-4 h-4 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        Back to Schedule
-                    </a>
-
-                    <!-- Share Button -->
-                    <button @click="shareMatch()" class="inline-flex items-center gap-2 text-muted hover:text-white transition text-xs font-bold tracking-widest uppercase group">
-                        <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-                        Share Stream
-                    </button>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-3 mb-4">
-                    <span x-show="match.isLive" class="bg-brand text-white text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span> LIVE NOW
-                    </span>
-                    <span x-show="!match.isLive" class="border border-muted/50 text-muted text-[10px] font-bold px-2 py-1 rounded uppercase">
-                        Upcoming
-                    </span>
-                    <span class="text-muted text-xs font-bold tracking-wider uppercase" x-text="match.location"></span>
-                </div>
-
-                <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight mb-2" x-text="match.title"></h1>
-                <p class="text-muted text-sm"><span x-text="match.date"></span></p>
-            </div>
-
-            <!-- Broadcast Sources (Only if Live) -->
-            <div x-show="match.isLive" class="mb-12">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xs font-bold tracking-widest uppercase text-muted">Broadcast Sources</h2>
-                    <div class="flex items-center gap-2 text-xs text-muted">
-                        <span class="w-1.5 h-1.5 bg-brand rounded-full animate-pulse"></span>
-                        <span x-text="formatViewers(viewerCount) + ' watching'"></span>
-                    </div>
-                </div>
+        <div x-show="!isExpired">
+            <div x-show="!loading || currentStreamUrl">
                 
-                <div class="flex flex-wrap gap-2">
-                    <template x-for="source in sources" :key="source.id">
-                        <button 
-                            @click="selectSource(source)"
-                            :class="activeSource?.id === source.id ? 'bg-brand text-white border-brand' : 'bg-card border-border hover:border-brand/50'"
-                            class="flex items-center gap-2 px-4 py-2.5 border rounded-lg transition text-sm font-bold">
-                            
-                            <span x-text="source.name"></span>
-                            
-                            <!-- Quality Badge -->
-                            <span 
-                                :class="source.quality === 'HD' ? 'bg-brand/20 text-brand border-brand/30' : 'bg-muted/20 text-muted border-muted/30'"
-                                class="text-[10px] font-black px-1.5 py-0.5 rounded border tracking-wider">
-                                <span x-text="source.quality"></span>
-                            </span>
-                        </button>
-                    </template>
-                </div>
-            </div>
+                <!-- Match Header -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-8">
+                        <a href="index.html" class="inline-flex items-center gap-2 text-muted hover:text-brand transition text-xs font-bold tracking-widest uppercase group">
+                            <svg class="w-4 h-4 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            Back to Schedule
+                        </a>
 
-            <!-- Video Player Area (Only if Live)  -->
-            <div x-show="match.isLive" class="mb-10">
-                <!-- IF LIVE: Show Player -->
-                <div class="relative aspect-video bg-black border border-border rounded-lg overflow-hidden">
-                    <div x-show="loading" class="absolute inset-0 flex items-center justify-center bg-dark/90 z-10">
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
-                            <span class="text-white text-sm font-medium">Loading stream...</span>
+                        <!-- Share Button -->
+                        <button @click="shareMatch()" class="inline-flex items-center gap-2 text-muted hover:text-white transition text-xs font-bold tracking-widest uppercase group">
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                            Share Stream
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3 mb-4">
+                        <span x-show="match.isLive" class="bg-brand text-white text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span> LIVE NOW
+                        </span>
+                        <span x-show="!match.isLive" class="border border-muted/50 text-muted text-[10px] font-bold px-2 py-1 rounded uppercase">
+                            Upcoming
+                        </span>
+                        <span class="text-muted text-xs font-bold tracking-wider uppercase" x-text="match.location"></span>
+                    </div>
+
+                    <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight mb-2" x-text="match.title"></h1>
+                    <p class="text-muted text-sm"><span x-text="match.date"></span></p>
+                </div>
+
+                <!-- Broadcast Sources (Only if Live) -->
+                <div x-show="match.isLive" class="mb-12">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xs font-bold tracking-widest uppercase text-muted">Broadcast Sources</h2>
+                        <div class="flex items-center gap-2 text-xs text-muted">
+                            <span class="w-1.5 h-1.5 bg-brand rounded-full animate-pulse"></span>
+                            <span x-text="formatViewers(viewerCount) + ' watching'"></span>
                         </div>
                     </div>
                     
-                    <iframe 
-                        x-show="!loading"
-                        :src="currentStreamUrl" 
-                        class="w-full h-full"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                        @load="loading = false">
-                    </iframe>
-                </div>
-            </div>
-            
-            <!-- Stream Ended State -->
-            <div x-show="streamEnded" class="mb-10">
-                <div class="bg-card border border-border rounded-lg p-10 text-center my-8">
-                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
-                    </svg>
-                    <h2 class="text-2xl font-bold mb-2">Live Stream Has Ended</h2>
-                    <p class="text-muted mb-6">This event has concluded. View other recommended live streams below.</p>
-                </div>
-            </div>
-            
-            <!-- Match Not Started State -->
-            <div x-show="matchNotStarted" class="bg-card border border-border rounded-lg p-10 text-center my-8">
-                <svg class="w-16 h-16 mx-auto mb-4 text-brand animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <h2 class="text-2xl font-bold mb-2">Waiting for Kickoff</h2>
-                <p class="text-muted mb-2">This broadcast hasn't started yet.</p>
-                <p class="text-sm text-brand font-bold" x-text="'Starts at: ' + match.date"></p>
-                
-                <div class="mt-6">
-                    <p class="text-xs text-muted uppercase tracking-widest mb-3">While you wait, check out these popular matches</p>
-                </div>
-            </div>
-
-
-            <!-- Telegram Promo Banner -->
-            <div class="bg-gradient-to-r from-[#0088cc] to-[#0099dd] rounded-xl p-6 my-8 shadow-2xl">
-                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div class="flex items-center gap-4">
-                        <!-- Telegram Icon -->
-                        <div class="bg-white/20 p-3 rounded-full">
-                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white mb-1">🚨 Never Miss a Goal!</h3>
-                            <p class="text-white/90 text-sm">Join <strong>10,000+</strong> fans on Telegram for instant alerts on Man Utd, Chelsea, Real Madrid & more streaming links!</p>
-                        </div>
+                    <div class="flex flex-wrap gap-2">
+                        <template x-for="source in sources" :key="source.id">
+                            <button 
+                                @click="selectSource(source)"
+                                :class="activeSource?.id === source.id ? 'bg-brand text-white border-brand' : 'bg-card border-border hover:border-brand/50'"
+                                class="flex items-center gap-2 px-4 py-2.5 border rounded-lg transition text-sm font-bold">
+                                
+                                <span x-text="source.name"></span>
+                                
+                                <!-- Quality Badge -->
+                                <span 
+                                    :class="source.quality === 'HD' ? 'bg-brand/20 text-brand border-brand/30' : 'bg-muted/20 text-muted border-muted/30'"
+                                    class="text-[10px] font-black px-1.5 py-0.5 rounded border tracking-wider">
+                                    <span x-text="source.quality"></span>
+                                </span>
+                            </button>
+                        </template>
                     </div>
-                    <a href="https://t.me/frontrowstream" 
-                    target="_blank"
-                    class="bg-white text-[#0088cc] hover:bg-gray-100 px-6 py-3 rounded-lg font-bold transition shadow-lg whitespace-nowrap flex items-center gap-2">
-                        <span>Join Now</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                        </svg>
-                    </a>
                 </div>
-            </div>
 
-            <!-- Recommended Matches (If Match Not Started) -->
-            <div x-show="!match.isLive && recommendedMatches.length > 0" class="mb-12">
-                <h2 class="text-xs font-bold tracking-widest uppercase text-muted mb-6">Recommended Live Matches</h2>
+                <!-- Video Player Area (Only if Live)  -->
+                <div x-show="match.isLive" class="mb-10">
+                    <!-- IF LIVE: Show Player -->
+                    <div class="relative aspect-video bg-black border border-border rounded-lg overflow-hidden">
+                        <div x-show="loading" class="absolute inset-0 flex items-center justify-center bg-dark/90 z-10">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+                                <span class="text-white text-sm font-medium">Loading stream...</span>
+                            </div>
+                        </div>
+                        
+                        <iframe 
+                            x-show="!loading"
+                            :src="currentStreamUrl" 
+                            class="w-full h-full"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            @load="loading = false">
+                        </iframe>
+                    </div>
+                </div>
                 
-                <div class="border border-border rounded-lg overflow-hidden">
-                    <template x-for="(match, index) in recommendedMatches" :key="match.id">
-                                    <div class="flex items-center justify-between py-5 px-4 border-b border-border last:border-b-0 hover:bg-card/30 transition cursor-pointer group" @click="openRecommendedMatch(match)">
-                                        
-                                        <!-- Time -->
-                                        <div class="sm:w-20 flex-shrink-0">
-                                            <span class="text-sm sm:text-lg  font-bold" x-text="match.time"></span>
-                                        </div>
+                <!-- Stream Ended State -->
+                <div x-show="streamEnded" class="mb-10">
+                    <div class="bg-card border border-border rounded-lg p-10 text-center my-8">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                        </svg>
+                        <h2 class="text-2xl font-bold mb-2">Live Stream Has Ended</h2>
+                        <p class="text-muted mb-6">This event has concluded. View other recommended live streams below.</p>
+                    </div>
+                </div>
+                
+                <!-- Match Not Started State -->
+                <div x-show="matchNotStarted" class="bg-card border border-border rounded-lg p-10 text-center my-8">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-brand animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h2 class="text-2xl font-bold mb-2">Waiting for Kickoff</h2>
+                    <p class="text-muted mb-2">This broadcast hasn't started yet.</p>
+                    <p class="text-sm text-brand font-bold" x-text="'Starts at: ' + match.date"></p>
+                    
+                    <div class="mt-6">
+                        <p class="text-xs text-muted uppercase tracking-widest mb-3">While you wait, check out these popular matches</p>
+                    </div>
+                </div>
 
-                                        <!-- Match Info -->
-                                        <div class="flex-1 min-w-0 px-4">
-                                            <h3 class="text-sm sm:text-lg font-bold line-clamp-3 group-hover:text-brand transition" x-text="match.title"></h3>
-                                            <div class="flex items-center gap-2 mt-1">
-                                                <span class="bg-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
-                                                    <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> LIVE
-                                                </span>
-                                                <span class="text-xs text-muted font-bold tracking-wider uppercase" x-text="match.location"></span>
+
+                <!-- Telegram Promo Banner -->
+                <div class="bg-gradient-to-r from-[#0088cc] to-[#0099dd] rounded-xl p-6 my-8 shadow-2xl">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="flex items-center gap-4">
+                            <!-- Telegram Icon -->
+                            <div class="bg-white/20 p-3 rounded-full">
+                                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white mb-1">🚨 Never Miss a Goal!</h3>
+                                <p class="text-white/90 text-sm">Join <strong>10,000+</strong> fans on Telegram for instant alerts on Man Utd, Chelsea, Real Madrid & more streaming links!</p>
+                            </div>
+                        </div>
+                        <a href="https://t.me/frontrowstream" 
+                        target="_blank"
+                        class="bg-white text-[#0088cc] hover:bg-gray-100 px-6 py-3 rounded-lg font-bold transition shadow-lg whitespace-nowrap flex items-center gap-2">
+                            <span>Join Now</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recommended Matches (If Match Not Started) -->
+                <div x-show="!match.isLive && recommendedMatches.length > 0" class="mb-12">
+                    <h2 class="text-xs font-bold tracking-widest uppercase text-muted mb-6">Recommended Live Matches</h2>
+                    
+                    <div class="border border-border rounded-lg overflow-hidden">
+                        <template x-for="(match, index) in recommendedMatches" :key="match.id">
+                                        <div class="flex items-center justify-between py-5 px-4 border-b border-border last:border-b-0 hover:bg-card/30 transition cursor-pointer group" @click="openRecommendedMatch(match)">
+                                            
+                                            <!-- Time -->
+                                            <div class="sm:w-20 flex-shrink-0">
+                                                <span class="text-sm sm:text-lg  font-bold" x-text="match.time"></span>
+                                            </div>
+
+                                            <!-- Match Info -->
+                                            <div class="flex-1 min-w-0 px-4">
+                                                <h3 class="text-sm sm:text-lg font-bold line-clamp-3 group-hover:text-brand transition" x-text="match.title"></h3>
+                                                <div class="flex items-center gap-2 mt-1">
+                                                    <span class="bg-brand text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+                                                        <span class="w-1 h-1 bg-white rounded-full animate-pulse"></span> LIVE
+                                                    </span>
+                                                    <span class="text-xs text-muted font-bold tracking-wider uppercase" x-text="match.location"></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Action Button -->
+                                            <div class="flex-shrink-0 hidden sm:block">
+                                                <button x-show="match.isLive" class="border border-muted/50 text-white text-xs font-bold px-4 py-2 rounded hover:border-brand hover:text-brand transition">
+                                                    WATCH LIVE
+                                                </button>
+                                                <button x-show="!match.isLive" class="border border-muted/30 text-muted text-xs font-bold px-4 py-2 rounded hover:border-white hover:text-white transition">
+                                                    SET REMINDER
+                                                </button>
                                             </div>
                                         </div>
-
-                                        <!-- Action Button -->
-                                        <div class="flex-shrink-0 hidden sm:block">
-                                            <button x-show="match.isLive" class="border border-muted/50 text-white text-xs font-bold px-4 py-2 rounded hover:border-brand hover:text-brand transition">
-                                                WATCH LIVE
-                                            </button>
-                                            <button x-show="!match.isLive" class="border border-muted/30 text-muted text-xs font-bold px-4 py-2 rounded hover:border-white hover:text-white transition">
-                                                SET REMINDER
-                                            </button>
-                                        </div>
-                                    </div>
-                    </template>
+                        </template>
+                    </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </main>
 

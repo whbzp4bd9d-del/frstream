@@ -8,6 +8,7 @@ function matchPage() {
         showToast: false,
         activeSource: null,
         matchNotStarted: false,
+        isExpired: false,
         currentStreamUrl: '',
         match: { title: 'Loading...', location: 'Live Event', date: '', isLive: false, startTime: Date.now() },
         sources: [],
@@ -60,6 +61,22 @@ function matchPage() {
             const now = Date.now();
             const fifteenMinsMs = 15 * 60 * 1000;
             const threeHoursMs = 3 * 60 * 60 * 1000;
+            const twelveHoursMs = 12 * 60 * 60 * 1000;
+            
+            // If the match started more than 12 hours ago, kill the page
+            if (startTime > 0 && startTime !== Date.now() && (now - startTime) > twelveHoursMs) {
+                this.isExpired = true;
+                this.loading = false;
+                document.title = '404 - Event Not Found | Front Row Stream';
+                
+                // Dynamically add noindex so Google drops expired pages
+                let metaRobots = document.createElement('meta');
+                metaRobots.name = "robots";
+                metaRobots.content = "noindex, nofollow";
+                document.head.appendChild(metaRobots);
+                
+                return; // Stop execution, prevents fetching streams and recommended matches
+            }
 
             this.matchNotStarted = this.match.startTime > (now + fifteenMinsMs);
             this.match.isLive = !this.matchNotStarted && (this.match.startTime >= (now - threeHoursMs));
