@@ -147,6 +147,29 @@
                     <p class="text-muted text-sm"><span x-text="match.date"></span></p>
                 </div>
 
+                <!-- Video Player Area (Only if Live)  -->
+                <div x-show="match.isLive" class="mb-10">
+                    <!-- IF LIVE: Show Player -->
+                    <div class="relative aspect-video bg-black border border-border rounded-lg overflow-hidden">
+                        <div x-show="loading" class="absolute inset-0 flex items-center justify-center bg-dark/90 z-10">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+                                <span class="text-white text-sm font-medium">Loading stream...</span>
+                            </div>
+                        </div>
+                        
+                        <iframe 
+                            x-show="!loading"
+                            :src="currentStreamUrl" 
+                            class="w-full h-full"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            @load="loading = false">
+                        </iframe>
+                    </div>
+                </div>
+                
                 <!-- Broadcast Sources (Only if Live) -->
                 <div x-show="match.isLive" class="mb-12">
                     <div class="flex justify-between items-center mb-4">
@@ -177,28 +200,6 @@
                     </div>
                 </div>
 
-                <!-- Video Player Area (Only if Live)  -->
-                <div x-show="match.isLive" class="mb-10">
-                    <!-- IF LIVE: Show Player -->
-                    <div class="relative aspect-video bg-black border border-border rounded-lg overflow-hidden">
-                        <div x-show="loading" class="absolute inset-0 flex items-center justify-center bg-dark/90 z-10">
-                            <div class="flex flex-col items-center gap-3">
-                                <div class="w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
-                                <span class="text-white text-sm font-medium">Loading stream...</span>
-                            </div>
-                        </div>
-                        
-                        <iframe 
-                            x-show="!loading"
-                            :src="currentStreamUrl" 
-                            class="w-full h-full"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen
-                            @load="loading = false">
-                        </iframe>
-                    </div>
-                </div>
                 
                 <!-- Stream Ended State -->
                 <div x-show="streamEnded" class="mb-10">
