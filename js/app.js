@@ -2,7 +2,7 @@
 
 function appData() {
     return {
-        activeCategory: 'live',
+        activeCategory: 'football',
         searchQuery: '',
         categories: [],
         otherCategories: [],
