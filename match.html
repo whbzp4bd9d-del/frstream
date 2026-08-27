@@ -15,6 +15,17 @@
 
     <link rel="canonical" href="https://frstream.live/match.html">
     <title>Watch Live Match - Front Row Stream</title>
+    <script>
+        (function() {
+            // 1. Grab the 'title' parameter from the URL
+            var urlTitle = new URLSearchParams(window.location.search).get('title');
+            
+            // 2. If it exists, decode it and update the browser tab title
+            if (urlTitle) {
+                document.title = decodeURIComponent(urlTitle) + ' Live Stream | FR Stream';
+            }
+        })();
+    </script>
     <meta name="description" content="Watch the live stream and view real-time stats for today's match on Front Row Stream.">
     <meta property="og:type" content="video.other">
     <!-- ... keep the rest of the OG tags, just change the URLs to match.html if needed, or leave as root ... -->
